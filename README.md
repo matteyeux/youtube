@@ -17,6 +17,16 @@ Enable virtual env : `source env/bin/activate`
 
 Install Python modules : `pip3 install -r requirements.txt`
 
-### Tutorial followed
+## MySQL
+
+1) install MySQL :  `sudo apt install mysql-client mysql-server`
+2) create database : `CREATE DATABASE youtube`
+3) create youtube user : `CREATE USER 'youtube'@'localhost' IDENTIFIED BY 'youtube';`
+4) grant all privileges to youtube user for youtube DB : `GRANT ALL PRIVILEGES ON *.'youtube' TO 'youtube'@'localhost'`
+5) insert data : `mysql -u youtube  youtube < mydb.sql`
+6) ???
+7) start coding
+
+### Followed tutorial
 
 This one uses MySQL instead of SQLite3 https://www.roytuts.com/python-rest-api-crud-example-using-flask-and-mysql/
