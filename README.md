@@ -7,7 +7,7 @@ Ubuntu :
 - install `python3-virtualenv` : `sudo apt install python3-virtualenv`
 
 Debian :
-- install `python3-pip3` : `sudo apt install python3-pip3`
+- install `python3-pip3` : `sudo apt install python3-pip`
 - install `virtualenv`with easy_instal : `sudo easy_install3 virtualenv`
 
 ### Setup
