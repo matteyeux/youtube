@@ -20,10 +20,11 @@ Install Python modules : `pip3 install -r requirements.txt`
 ## MySQL
 
 1) install MySQL :  `sudo apt install mysql-client mysql-server`
-2) create database : `CREATE DATABASE youtube`
+2) create database : `CREATE DATABASE youtube;`
 3) create youtube user : `CREATE USER 'youtube'@'localhost' IDENTIFIED BY 'youtube';`
-4) grant all privileges to youtube user for youtube DB : `GRANT ALL PRIVILEGES ON *.'youtube' TO 'youtube'@'localhost'`
-5) insert data : `mysql -u youtube  youtube < mydb.sql`
+(In case of error : )
+4) grant all privileges to youtube user for youtube DB : `GRANT ALL PRIVILEGES ON *.* TO 'youtube'@'localhost'`
+5) insert data : `mysql -u youtube  youtube < resources/database.sql`
 6) ???
 7) start coding
 
