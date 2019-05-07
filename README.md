@@ -24,7 +24,7 @@ Install Python modules : `pip3 install -r requirements.txt`
 3) create youtube user : `CREATE USER 'youtube'@'localhost' IDENTIFIED BY 'youtube';`
 (In case of error : )
 4) grant all privileges to youtube user for youtube DB : `GRANT ALL PRIVILEGES ON *.* TO 'youtube'@'localhost'`
-5) insert data : `mysql -u youtube  youtube < mydb.sql`
+5) insert data : `mysql -u youtube  youtube < resources/mydb.sql`
 6) ???
 7) start coding
 
