@@ -98,7 +98,10 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (0,'matteyeux','matteyeux@0day.cool','matteyeux','bonjour','2019-05-03 11:41:22'),(1,'boris','boris@0day.cool','boris','bonjour','2019-05-03 11:42:10');
+INSERT INTO `user` 
+VALUES (0,'matteyeux','matteyeux@0day.cool','matteyeux','bonjour','2019-05-03 11:41:22'),
+(1,'boris','boris@0day.cool','boris','bonjour','2019-05-03 11:42:10'),
+(2,'yoann','yoann@0day.cool','yoann','bonjour','2019-05-03 11:43:10');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
