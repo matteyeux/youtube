@@ -6,7 +6,7 @@ from flask import flash, request
 from werkzeug import generate_password_hash, check_password_hash
 import connexion
 
-@app.route('/add', methods=['POST'])
+@app.route('/user', methods=['POST'])
 def add_user():
 	try:
 		_json = request.json
@@ -115,17 +115,9 @@ def delete_user(id):
 		cursor.close() 
 		conn.close()
 
-@app.errorhandler(404)
-def not_found(error=None):
-	message = {
-		'status': 404,
-		'message': 'Not Found: ' + request.url + ':('
-	}
 
-	resp = jsonify(message)
-	resp.status_code = 404
 
-	return resp
+
 
 @app.route('/')
 def home():
