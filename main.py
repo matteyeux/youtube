@@ -4,6 +4,7 @@ import sys
 from app import app
 sys.path.insert(0, 'routes')
 
+import user
 import users
 import video
 import errors
