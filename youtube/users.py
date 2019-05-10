@@ -11,10 +11,20 @@ def users():
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT * FROM user")
+		cursor.execute("SELECT created_at, email, id, password, pseudo, username FROM user")
 		rows = cursor.fetchall()
-		resp = jsonify(rows)
-		resp.status_code = 200
+		if rows:
+			result = {
+				'message': 'OK',
+				'data': rows
+				# TODO : Add pager !!!
+			}
+			resp = jsonify(result)
+			resp.status_code = 200
+		else:
+			result = {'message': 'not found'}
+			resp = jsonify(result)
+			resp.status_code = 404
 		return resp
 	except Exception as e:
 		print(e)
