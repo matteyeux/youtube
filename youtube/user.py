@@ -37,15 +37,24 @@ def add_user():
 		else:
 			return errors.not_found()
 
-@app.route('/user/<int:id>')
+@app.route('/user/<int:id>', methods=['GET'])
 def user(id):
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT * FROM user WHERE id=%s", id)
+		cursor.execute("SELECT created_at, email, id, password, pseudo, username FROM user WHERE id=%s", id)
 		row = cursor.fetchone()
-		resp = jsonify(row)
-		resp.status_code = 200
+		if row:
+			result = {
+				'message': 'OK',
+				'data': row
+			}
+			resp = jsonify(result)
+			resp.status_code = 200
+		else:
+			result = {'message': 'not found'}
+			resp = jsonify(result)
+			resp.status_code = 404
 		return resp
 	except Exception as e:
 		print(e)
