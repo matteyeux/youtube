@@ -5,6 +5,7 @@ from flask import jsonify
 from flask import flash, request
 from werkzeug import generate_password_hash, check_password_hash
 import connexion
+import errors
 
 @app.route('/users')
 def users():
@@ -22,9 +23,7 @@ def users():
 			resp = jsonify(result)
 			resp.status_code = 200
 		else:
-			result = {'message': 'not found'}
-			resp = jsonify(result)
-			resp.status_code = 404
+			return errors.not_found()
 		return resp
 	except Exception as e:
 		print(e)

@@ -52,9 +52,7 @@ def user(id):
 			resp = jsonify(result)
 			resp.status_code = 200
 		else:
-			result = {'message': 'not found'}
-			resp = jsonify(result)
-			resp.status_code = 404
+			return errors.not_found()
 		return resp
 	except Exception as e:
 		print(e)
@@ -105,8 +103,7 @@ def delete_user(id):
 			resp = jsonify('User deleted successfully!')
 			resp.status_code = 204
 		else:
-			resp = jsonify({'message': 'not found'})
-			resp.status_code = 404
+			return errors.not_found()
 		# TODO DEBUG : Just for having user to delete (waiting for create user works)
 		#cursor.execute("INSERT INTO user VALUES ('7','test','test@0day.cool','test','bonjour','2019-05-03 11:43:10')")
 		conn.commit()
