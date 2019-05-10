@@ -2,40 +2,40 @@ import pymysql
 from app import app
 from db_config import mysql
 from flask import jsonify
-from flask import flash, request
+from flask import flash, request, session
 from werkzeug import generate_password_hash, check_password_hash
 import connexion
+import errors
 
 @app.route('/user', methods=['POST'])
 def add_user():
-	try:
 		_json = request.json
-		_username = _json['username']
-		_email = _json['email']
-		_pseudo = _json['pseudo']
-		_password = _json['pwd']
+		_username = request.form.get('username')
+		_email = request.form.get('email')
+		_pseudo = request.form.get('pseudo')
+		_password = request.form.get('pwd')
+		print(_username)
 		# validate the received values
-		if _name and _email and _pseudo and _password and request.method == 'POST':
+		if _username and _email and _pseudo and _password and request.method == 'POST':
 			# do not save password as a plain text cuz we not stupid
 			_hashed_password = generate_password_hash(_password)
-
 			# save edits
 			sql = "INSERT INTO user(username, email, pseudo, password) VALUES(%s, %s, %s, %s)"
 			data = (_username, _email, _pseudo, _hashed_password)
-			conn = mysql.connect()
-			cursor = conn.cursor()
-			cursor.execute(sql, data)
-			conn.commit()
-			resp = jsonify('User added successfully!')
-			resp.status_code = 200
-			return resp
+			try:
+				conn = mysql.connect()
+				cursor = conn.cursor()
+				cursor.execute(sql, data)
+				conn.commit()
+				resp = jsonify('User added successfully!')
+				resp.status_code = 200
+				cursor.close()
+				conn.close()
+				return resp
+			except Exception as e:
+				print(e)
 		else:
-			return not_found()
-	except Exception as e:
-		print(e)
-	finally:
-		cursor.close() 
-		conn.close()
+			return errors.not_found()
 
 @app.route('/user/<int:id>')
 def user(id):
