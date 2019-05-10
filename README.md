@@ -30,7 +30,7 @@ Install Python modules : `pip3 install -r requirements.txt`
 
 ## Run tha API
 
-`./main.py`
+`youtube/youtube.py`
 
 ### Followed tutorial
 
