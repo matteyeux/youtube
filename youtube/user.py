@@ -44,12 +44,17 @@ def user(id):
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
 		cursor.execute("SELECT created_at, email, id, password, pseudo, username FROM user WHERE id=%s", id)
 		row = cursor.fetchone()
-		result = {
-			'message': 'OK',
-			'data': row
-		}
-		resp = jsonify(result)
-		resp.status_code = 200
+		if row:
+			result = {
+				'message': 'OK',
+				'data': row
+			}
+			resp = jsonify(result)
+			resp.status_code = 200
+		else:
+			result = {'message': 'not found'}
+			resp = jsonify(result)
+			resp.status_code = 404
 		return resp
 	except Exception as e:
 		print(e)
