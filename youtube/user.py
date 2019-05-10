@@ -92,22 +92,30 @@ def update_user():
 		cursor.close() 
 		conn.close()
 
+# DELETE USER
 @app.route('/user/<int:id>', methods=['DELETE'])
 def delete_user(id):
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor()
-		cursor.execute("DELETE FROM user WHERE id=%s", (id,))
+		cursor.execute("SELECT created_at, email, id, password, pseudo, username FROM user WHERE id=%s", id)
+		row = cursor.fetchone()
+		if row:
+			cursor.execute("DELETE FROM user WHERE id=%s", (id,))
+			resp = jsonify('User deleted successfully!')
+			resp.status_code = 204
+		else:
+			resp = jsonify({'message': 'not found'})
+			resp.status_code = 404
+		# TODO DEBUG : Just for having user to delete (waiting for create user works)
+		#cursor.execute("INSERT INTO user VALUES ('7','test','test@0day.cool','test','bonjour','2019-05-03 11:43:10')")
 		conn.commit()
-		resp = jsonify('User deleted successfully!')
-		resp.status_code = 200
 		return resp
 	except Exception as e:
 		print(e)
 	finally:
 		cursor.close() 
 		conn.close()
-
 
 
 # TODO : Delete it later or change to the swagger url (if possible)
