@@ -98,7 +98,7 @@ def delete_user(id):
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor()
-		cursor.execute("SELECT created_at, email, id, password, pseudo, username FROM user WHERE id=%s", id)
+		cursor.execute("SELECT id FROM user WHERE id=%s", id)
 		row = cursor.fetchone()
 		if row:
 			cursor.execute("DELETE FROM user WHERE id=%s", (id,))
