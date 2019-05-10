@@ -40,7 +40,6 @@ def forbidden(error=None):
 
 	return resp
 
-
 @app.errorhandler(404)
 def not_found(error=None):
 	message = {
@@ -50,4 +49,15 @@ def not_found(error=None):
 
 	resp = jsonify(message)
 	resp.status_code = 404
+	return resp
+
+@app.errorhandler(405)
+def not_allowed(error=None):
+	message = {
+		#'status': 404,
+		'message': 'Not allowed'
+	}
+
+	resp = jsonify(message)
+	resp.status_code = 405
 	return resp
