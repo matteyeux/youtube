@@ -67,7 +67,7 @@ def get_user():
 
 # endpoint to get user detail by id
 @app.route("/user/<id>", methods=["GET"])
-def user_detail(id):
+def user_details(id):
 	user = User.query.get(id)
 	return user_schema.jsonify(user)
 
