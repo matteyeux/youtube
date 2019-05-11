@@ -7,38 +7,6 @@ from werkzeug import generate_password_hash, check_password_hash
 import connexion
 import errors
 
-@app.route('/user', methods=['POST'])
-def add_user():
-		_json = request.json
-		_username = request.form.get('username')
-		_email = request.form.get('email')
-		_pseudo = request.form.get('pseudo')
-		_password = request.form.get('password')
-		if _username and _email and _pseudo and _password:
-			_hashed_password = generate_password_hash(_password)
-			sql = "INSERT INTO user(username, email, pseudo, password) VALUES(%s, %s, %s, %s)"
-			data = (_username, _email, _pseudo, _hashed_password)
-			try:
-				conn = mysql.connect()
-				cursor = conn.cursor(pymysql.cursors.DictCursor)
-				cursor.execute(sql, data)
-				cursor.execute("SELECT created_at, email, id, password, pseudo, username FROM user WHERE username=%s", _username)
-				row = cursor.fetchone()
-				conn.commit()
-				cursor.close()
-				result = {
-					'message': 'OK',
-					'data': row
-				}
-				resp = jsonify(result)
-				resp.status_code = 200
-				conn.close()
-				return resp
-			except Exception as e:
-				print(e)
-		else:
-			return errors.not_found()
-
 # GET USER
 @app.route('/user/<int:id>', methods=['GET'])
 def user(id):
@@ -53,6 +21,26 @@ def user(id):
 	else:
 		return errors.not_found()
 	return resp
+
+# CREATE USER
+@app.route('/user', methods=['POST'])
+def add_user():
+		_json = request.json
+		_username = request.form.get('username')
+		_email = request.form.get('email')
+		_pseudo = request.form.get('pseudo')
+		_password = request.form.get('password')
+		if _username and _email and _pseudo and _password:
+			row = insert_user_sql(_username, _email, _pseudo, _password)
+			result = {
+				'message': 'OK',
+				'data': row
+			}
+			resp = jsonify(result)
+			resp.status_code = 200
+			return resp
+		else:
+			return errors.not_found()
 
 @app.route('/user', methods=['PUT'])
 def update_user():
@@ -129,12 +117,45 @@ def get_user_sql_from_id(id):
 		cursor.close()
 		conn.close()
 
+def get_user_sql_from_pseudo(pseudo):
+	try:
+		conn = mysql.connect()
+		cursor = conn.cursor(pymysql.cursors.DictCursor)
+		cursor.execute("SELECT created_at, email, id, password, pseudo, username FROM user WHERE pseudo=%s", pseudo)
+		row = cursor.fetchone()
+		if row:
+			return row
+		else:
+			return False
+	except Exception as e:
+		print(e)
+	finally:
+		cursor.close()
+		conn.close()
+
 def delete_user_sql(id):
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor()
 		cursor.execute("DELETE FROM user WHERE id=%s", id)
 		conn.commit()
+	except Exception as e:
+		print(e)
+	finally:
+		cursor.close()
+		conn.close()
+
+def insert_user_sql(username, email, pseudo, password):
+	hashed_password = generate_password_hash(password)
+	try:
+		conn = mysql.connect()
+		cursor = conn.cursor()
+		sql = "INSERT INTO user(username, email, pseudo, password) VALUES(%s, %s, %s, %s)"
+		data = (username, email, pseudo, hashed_password)
+		cursor.execute(sql, data)
+		conn.commit()
+		row = get_user_sql_from_pseudo(pseudo)
+		return row
 	except Exception as e:
 		print(e)
 	finally:
