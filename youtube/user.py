@@ -39,28 +39,20 @@ def add_user():
 		else:
 			return errors.not_found()
 
+# GET USER
 @app.route('/user/<int:id>', methods=['GET'])
 def user(id):
-	try:
-		conn = mysql.connect()
-		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT created_at, email, id, password, pseudo, username FROM user WHERE id=%s", id)
-		row = cursor.fetchone()
-		if row:
-			result = {
-				'message': 'OK',
-				'data': row
-			}
-			resp = jsonify(result)
-			resp.status_code = 200
-		else:
-			return errors.not_found()
-		return resp
-	except Exception as e:
-		print(e)
-	finally:
-		cursor.close() 
-		conn.close()
+	row = get_user_sql_from_id(id)
+	if row:
+		result = {
+			'message': 'OK',
+			'data': row
+		}
+		resp = jsonify(result)
+		resp.status_code = 200
+	else:
+		return errors.not_found()
+	return resp
 
 @app.route('/user', methods=['PUT'])
 def update_user():
@@ -95,30 +87,18 @@ def update_user():
 # DELETE USER
 @app.route('/user/<int:id>', methods=['DELETE'])
 def delete_user(id):
-	try:
-		conn = mysql.connect()
-		cursor = conn.cursor()
-		cursor.execute("SELECT id FROM user WHERE id=%s", id)
-		row = cursor.fetchone()
-		if row:
-			cursor.execute("DELETE FROM user WHERE id=%s", (id,))
-			resp = jsonify('User deleted successfully!')
-			resp.status_code = 204
-		else:
-			return errors.not_found()
-		# TODO DEBUG : Just for having user to delete (waiting for create user works)
-		#cursor.execute("INSERT INTO user VALUES ('7','test','test@0day.cool','test','bonjour','2019-05-03 11:43:10')")
-		conn.commit()
-		return resp
-	except Exception as e:
-		print(e)
-	finally:
-		cursor.close() 
-		conn.close()
+	row = get_user_sql_from_id(id)
+	if row:
+		delete_user_sql(id)
+		resp = jsonify('User deleted successfully!')
+		resp.status_code = 204
+	else:
+		return errors.not_found()
+	return resp
+
 
 
 # TODO : Delete it later or change to the swagger url (if possible)
-
 @app.route('/')
 def home():
 	message = {
@@ -130,3 +110,33 @@ def home():
 	resp.status_code = 200
 
 	return resp
+
+
+
+def get_user_sql_from_id(id):
+	try:
+		conn = mysql.connect()
+		cursor = conn.cursor(pymysql.cursors.DictCursor)
+		cursor.execute("SELECT created_at, email, id, password, pseudo, username FROM user WHERE id=%s", id)
+		row = cursor.fetchone()
+		if row:
+			return row
+		else:
+			return False
+	except Exception as e:
+		print(e)
+	finally:
+		cursor.close()
+		conn.close()
+
+def delete_user_sql(id):
+	try:
+		conn = mysql.connect()
+		cursor = conn.cursor()
+		cursor.execute("DELETE FROM user WHERE id=%s", id)
+		conn.commit()
+	except Exception as e:
+		print(e)
+	finally:
+		cursor.close()
+		conn.close()
