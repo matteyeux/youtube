@@ -6,12 +6,12 @@ import requests
 api_endpoint = "http://127.0.0.1:5000/user"
 
 params = {
-		'username' : "test",
-		'email' : "matteyeux@gmail.com",
-		'pseudo' : "tester",
-		'pwd' : "this_is_a_test"
+		'username' : "weed",
+		'email' : "weed@gmail.com",
+		'pseudo' : "great",
+		'password' : "ccc"
 	}
 
-r = requests.post(url=api_endpoint, data=params)
+r = requests.post(url=api_endpoint, json=params)
 
 print(r)
