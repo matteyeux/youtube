@@ -48,12 +48,13 @@ def add_user():
 
 	new_user = User(username, email, pseudo, password)
 	result = user_schema.dump(new_user)
+	print(result)
 
 	db.session.add(new_user)
 	db.session.commit()
 
-	resp = jsonify(new_user)
-	resp.staus_code = 201
+	resp = user_schema.jsonify(new_user)
+	resp.status_code = 201
 	return resp
 
 
