@@ -11,7 +11,7 @@ def random_str():
 
 api_endpoint = "http://127.0.0.1:5000/user"
 
-string_to_gen = randomString2()
+string_to_gen = random_str()
 mail = string_to_gen + "@pornhub"
 params = {
 		'username' : string_to_gen,
