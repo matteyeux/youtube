@@ -84,7 +84,7 @@ CREATE TABLE `user` (
   `username` varchar(45) NOT NULL,
   `email` varchar(45) NOT NULL,
   `pseudo` varchar(45) DEFAULT NULL,
-  `password` varchar(45) NOT NULL,
+  `password` varchar(128) NOT NULL,
   `created_at` datetime DEFAULT NOW(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `email_UNIQUE` (`email`),
