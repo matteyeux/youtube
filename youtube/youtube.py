@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
@@ -11,8 +13,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
-
-SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class User(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
@@ -48,7 +48,6 @@ def add_user():
 
 	new_user = User(username, email, pseudo, password)
 	result = user_schema.dump(new_user)
-	print(result)
 
 	db.session.add(new_user)
 	db.session.commit()
@@ -98,4 +97,5 @@ def user_delete(id):
 
 
 if __name__ == '__main__':
-	app.run(debug=True)
+	app.run(debug=True, host='0.0.0.0', port=5000)
+
