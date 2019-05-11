@@ -13,23 +13,25 @@ def add_user():
 		_username = request.form.get('username')
 		_email = request.form.get('email')
 		_pseudo = request.form.get('pseudo')
-		_password = request.form.get('pwd')
-		print(_username)
-		# validate the received values
-		if _username and _email and _pseudo and _password and request.method == 'POST':
-			# do not save password as a plain text cuz we not stupid
+		_password = request.form.get('password')
+		if _username and _email and _pseudo and _password:
 			_hashed_password = generate_password_hash(_password)
-			# save edits
 			sql = "INSERT INTO user(username, email, pseudo, password) VALUES(%s, %s, %s, %s)"
 			data = (_username, _email, _pseudo, _hashed_password)
 			try:
 				conn = mysql.connect()
-				cursor = conn.cursor()
+				cursor = conn.cursor(pymysql.cursors.DictCursor)
 				cursor.execute(sql, data)
+				cursor.execute("SELECT created_at, email, id, password, pseudo, username FROM user WHERE username=%s", _username)
+				row = cursor.fetchone()
 				conn.commit()
-				resp = jsonify('User added successfully!')
-				resp.status_code = 200
 				cursor.close()
+				result = {
+					'message': 'OK',
+					'data': row
+				}
+				resp = jsonify(result)
+				resp.status_code = 200
 				conn.close()
 				return resp
 			except Exception as e:
@@ -52,9 +54,7 @@ def user(id):
 			resp = jsonify(result)
 			resp.status_code = 200
 		else:
-			result = {'message': 'not found'}
-			resp = jsonify(result)
-			resp.status_code = 404
+			return errors.not_found()
 		return resp
 	except Exception as e:
 		print(e)
@@ -105,8 +105,7 @@ def delete_user(id):
 			resp = jsonify('User deleted successfully!')
 			resp.status_code = 204
 		else:
-			resp = jsonify({'message': 'not found'})
-			resp.status_code = 404
+			return errors.not_found()
 		# TODO DEBUG : Just for having user to delete (waiting for create user works)
 		#cursor.execute("INSERT INTO user VALUES ('7','test','test@0day.cool','test','bonjour','2019-05-03 11:43:10')")
 		conn.commit()
