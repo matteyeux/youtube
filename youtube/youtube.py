@@ -32,7 +32,6 @@ class UserSchema(ma.Schema):
 		# Fields to expose
 		fields = ('username', 'email', 'pseudo', 'password')
 
-
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 
