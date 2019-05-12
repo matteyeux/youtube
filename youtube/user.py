@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from app import app
-import jwt
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
@@ -19,25 +18,6 @@ class User(db.Model):
 		self.email = email
 		self.pseudo = pseudo
 		self.password = password
-
-	def encode_auth_token(self, user_id):
-		"""
-		Generates the Auth Token
-		:return: string
-		"""
-		try:
-			payload = {
-				'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=5),
-				'iat': datetime.datetime.utcnow(),
-				'sub': user_id
-			}
-			return jwt.encode(
-				payload,
-				app.config.get('SECRET_KEY'),
-				algorithm='HS256'
-			)
-		except Exception as error:
-			return error	
 
 class UserSchema(ma.Schema):
 	class Meta:
