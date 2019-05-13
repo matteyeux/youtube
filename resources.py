@@ -11,7 +11,7 @@ parser.add_argument('password', help = 'This field cannot be blank', required = 
 parser.add_argument('created_at', help = 'This field cannot be blank', required = False)
 
 
-class UserRegistration(Resource):
+class UserCreate(Resource):
 	def post(self):
 		data = parser.parse_args()
 
@@ -25,27 +25,26 @@ class UserRegistration(Resource):
 			password = UserModel.generate_hash(data['password']),
 			created_at = datetime.datetime.now()
 		)
-	try:
-		new_user.save_to_db()
-		access_token = create_access_token(identity = data['username'])
-		refresh_token = create_refresh_token(identity = data['username'])
+		try:
+			new_user.save_to_db()
+			access_token = create_access_token(identity = data['username'])
+			refresh_token = create_refresh_token(identity = data['username'])
 
-		current_user = UserModel.find_by_username(data['username'])
-		return {
-			'message': 'OK',
-			'data': {
-				'id': current_user.id,
-				'username': current_user.username,
-				'pseudo': current_user.pseudo,
-				'created_at': str(current_user.created_at),
-				'email': current_user.email				
-				}
-		}, 201
-	except:
-		return {'message': 'Something went wrong'}, 500
+			current_user = UserModel.find_by_username(data['username'])
+			return {
+				'message': 'OK',
+				'data': {
+					'id': current_user.id,
+					'username': current_user.username,
+					'pseudo': current_user.pseudo,
+					'created_at': str(current_user.created_at),
+					'email': current_user.email
+					}
+			}, 201
+		except:
+			return {'message': 'Something went wrong'}, 500
 
-
-class UserLogin(Resource):
+class UserAuthentication(Resource):
 	def post(self):
 		data = parser.parse_args()
 		current_user = UserModel.find_by_username(data['username'])
@@ -60,8 +59,6 @@ class UserLogin(Resource):
 				'message': 'OK',
 				'data': {
 					'token': access_token,
-					'refresh_token': refresh_token,
-					'message': 'Logged in as {}'.format(current_user.username),
 					'user': {
 						'id': current_user.id,
 						'username': current_user.username,
@@ -72,34 +69,30 @@ class UserLogin(Resource):
 					}				
 				}, 201
 		else:
-			return {'message': 'Wrong credentials'}
+			return {'message': 'Wrong credentials'}, 500
 
-	  
 class UserLogoutAccess(Resource):
 	def post(self):
 		return {'message': 'User logout'}
-	  
-	  
+
 class UserLogoutRefresh(Resource):
 	def post(self):
 		return {'message': 'User logout'}
-	  
-	  
+
 class TokenRefresh(Resource):
 	def post(self):
 		return {'message': 'Token refresh'}
-	  
-	  
+
 class AllUsers(Resource):
 	def get(self):
 		return UserModel.return_all()
 	
 	def delete(self):
 		return UserModel.delete_all()
-	  
-	  
+
 class SecretResource(Resource):
+	@jwt_required
 	def get(self):
 		return {
-			'answer': 42
+			'answer': 'Accessible secret route with a JWT token'
 		}
