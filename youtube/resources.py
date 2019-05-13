@@ -16,7 +16,7 @@ class UserCreate(Resource):
 	def post(self):
 		data = parser.parse_args()
 
-		if UserModel.find_by_username(data['username']):
+		if UserModel.get_user_by_username(data['username']):
 			return {'message': 'User {} already exists'. format(data['username'])}
 
 		new_user = UserModel(
@@ -31,7 +31,7 @@ class UserCreate(Resource):
 			access_token = create_access_token(identity = data['username'])
 			refresh_token = create_refresh_token(identity = data['username'])
 
-			current_user = UserModel.find_by_username(data['username'])
+			current_user = UserModel.get_user_by_username(data['username'])
 			return {
 				'message': 'OK',
 				'data': {
@@ -48,7 +48,7 @@ class UserCreate(Resource):
 class UserAuthentication(Resource):
 	def post(self):
 		data = parser.parse_args()
-		current_user = UserModel.find_by_username(data['username'])
+		current_user = UserModel.get_user_by_username(data['username'])
 
 		if not current_user:
 			return {'message': 'User {} doesn\'t exist'.format(data['username'])}
@@ -101,12 +101,6 @@ class TokenRefresh(Resource):
 		access_token = create_access_token(identity = current_user)
 		return {'access_token': access_token}
 
-class AllUsers(Resource):
-	def get(self):
-		return UserModel.return_all()
-	
-	def delete(self):
-		return UserModel.delete_all()
 
 class SecretResource(Resource):
 	@jwt_required

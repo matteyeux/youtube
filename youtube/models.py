@@ -17,11 +17,15 @@ class UserModel(db.Model):
 		db.session.commit()
 
 	@classmethod
-	def find_by_username(cls, username):
+	def get_user_by_username(cls, username):
 		return cls.query.filter_by(username = username).first()
 
 	@classmethod
-	def return_all(cls):
+	def get_user_by_id(cls, id):
+		return cls.query.filter_by(id = id).first()
+
+	@classmethod
+	def get_all_users(cls):
 		def to_json(x):
 			return {
 				'id': x.id,
@@ -35,6 +39,7 @@ class UserModel(db.Model):
 			'data': list(map(lambda x: to_json(x), UserModel.query.all()))
 		}
 
+	"""
 	@classmethod
 	def delete_all(cls):
 		try:
@@ -43,6 +48,7 @@ class UserModel(db.Model):
 			return {'message': '{} row(s) deleted'.format(num_rows_deleted)}
 		except:
 			return {'message': 'Something went wrong'}
+	"""
 
 	@staticmethod
 	def generate_hash(password):
