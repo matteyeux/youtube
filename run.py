@@ -19,6 +19,14 @@ def create_tables():
 app.config['JWT_SECRET_KEY'] = 'jwt-secret-string'
 jwt = JWTManager(app)
 
+app.config['JWT_BLACKLIST_ENABLED'] = True
+app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
+
+@jwt.token_in_blacklist_loader
+def check_if_token_in_blacklist(decrypted_token):
+	jti = decrypted_token['jti']
+	return models.RevokedTokenModel.is_jti_blacklisted(jti)
+
 import views, models, resources
 
 api.add_resource(resources.UserCreate, '/user')

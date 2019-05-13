@@ -1,5 +1,6 @@
 from flask_restful import Resource, reqparse
 from models import UserModel
+from models import UserModel, RevokedTokenModel
 from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
 import datetime
 
@@ -72,16 +73,33 @@ class UserAuthentication(Resource):
 			return {'message': 'Wrong credentials'}, 500
 
 class UserLogoutAccess(Resource):
+	@jwt_required
 	def post(self):
-		return {'message': 'User logout'}
+		jti = get_raw_jwt()['jti']
+		try:
+			revoked_token = RevokedTokenModel(jti = jti)
+			revoked_token.add()
+			return {'message': 'Access token has been revoked'}
+		except:
+			return {'message': 'Something went wrong'}, 500
 
 class UserLogoutRefresh(Resource):
+	@jwt_refresh_token_required
 	def post(self):
-		return {'message': 'User logout'}
+		jti = get_raw_jwt()['jti']
+		try:
+			revoked_token = RevokedTokenModel(jti = jti)
+			revoked_token.add()
+			return {'message': 'Refresh token has been revoked'}
+		except:
+			return {'message': 'Something went wrong'}, 500
 
 class TokenRefresh(Resource):
+	@jwt_refresh_token_required
 	def post(self):
-		return {'message': 'Token refresh'}
+		current_user = get_jwt_identity()
+		access_token = create_access_token(identity = current_user)
+		return {'access_token': access_token}
 
 class AllUsers(Resource):
 	def get(self):
