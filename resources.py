@@ -34,7 +34,6 @@ class UserRegistration(Resource):
 		return {
 			'message': 'OK',
 			'data': {
-				# 'data': data
 				'id': current_user.id,
 				'username': current_user.username,
 				'pseudo': current_user.pseudo,
