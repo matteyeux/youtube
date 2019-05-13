@@ -25,6 +25,10 @@ class UserModel(db.Model):
 		return cls.query.filter_by(id = id).first()
 
 	@classmethod
+	def delete_user_by_id(cls, id):
+		return cls.query.filter_by(id = id).delete()
+
+	@classmethod
 	def get_all_users(cls):
 		def to_json(x):
 			return {

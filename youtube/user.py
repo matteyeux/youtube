@@ -2,19 +2,31 @@ from flask_restful import Resource, reqparse
 from models import UserModel
 import jsonify
 
-class GetUser(Resource):
+class User(Resource):
 	def get(self, id):
 		result = UserModel.get_user_by_id(id)
-		return {
-			'message': 'OK',
-			'data': {
-				'id': result.id,
-				'username': result.username,
-				'pseudo': result.pseudo,
-				'created_at': str(result.created_at),
-				'email': result.email
+		if result:
+			return {
+				'message': 'OK',
+				'data': {
+					'id': result.id,
+					'username': result.username,
+					'pseudo': result.pseudo,
+					'created_at': str(result.created_at),
+					'email': result.email
+				}
 			}
-		}
+		else:
+			return { 'message': 'Not found'}, 404
+
+	def delete(self, id):
+		result = UserModel.get_user_by_id(id)
+		if result:
+			UserModel.delete_user_by_id(id)
+			return {}, 204
+		else:
+			return { 'message': 'Not found'}, 404
+
 
 # List all users
 class GetAllUsers(Resource):
