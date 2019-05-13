@@ -21,10 +21,11 @@ jwt = JWTManager(app)
 
 import views, models, resources
 
-api.add_resource(resources.UserRegistration, '/registration')
-api.add_resource(resources.UserLogin, '/login')
+api.add_resource(resources.UserRegistration, '/user')
+api.add_resource(resources.UserLogin, '/auth')
 api.add_resource(resources.UserLogoutAccess, '/logout/access')
 api.add_resource(resources.UserLogoutRefresh, '/logout/refresh')
 api.add_resource(resources.TokenRefresh, '/token/refresh')
+api.add_resource(resources.User, '/user')
 api.add_resource(resources.AllUsers, '/users')
 api.add_resource(resources.SecretResource, '/secret')

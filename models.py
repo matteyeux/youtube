@@ -1,5 +1,6 @@
 from run import db
 from passlib.hash import pbkdf2_sha256 as sha256
+import datetime
 
 class UserModel(db.Model):
 	__tablename__ = 'user'
@@ -9,7 +10,8 @@ class UserModel(db.Model):
 	email = db.Column(db.String(120), unique = True, nullable = False)
 	pseudo = db.Column(db.String(120), nullable = False)
 	password = db.Column(db.String(120), nullable = False)
-	
+	created_at = db.Column(db.Date, nullable = False)
+
 	def save_to_db(self):
 		db.session.add(self)
 		db.session.commit()
@@ -22,12 +24,16 @@ class UserModel(db.Model):
 	def return_all(cls):
 		def to_json(x):
 			return {
+				'id': x.id,
 				'username': x.username,
-				'email': x.email,
 				'pseudo': x.pseudo,
-				'password': x.password
+				'created_at': str(x.created_at),
+				'email': x.email
 			}
-		return {'users': list(map(lambda x: to_json(x), UserModel.query.all()))}
+		return {
+			'message': 'OK',
+			'data': list(map(lambda x: to_json(x), UserModel.query.all()))
+		}
 
 	@classmethod
 	def delete_all(cls):
@@ -36,12 +42,12 @@ class UserModel(db.Model):
 			db.session.commit()
 			return {'message': '{} row(s) deleted'.format(num_rows_deleted)}
 		except:
-			return {'message': 'Something went wrong'}    
+			return {'message': 'Something went wrong'}
 
 	@staticmethod
 	def generate_hash(password):
 		return sha256.hash(password)
-	
+
 	@staticmethod
 	def verify_hash(password, hash):
 		return sha256.verify(password, hash)
