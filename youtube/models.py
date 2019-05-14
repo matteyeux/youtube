@@ -2,6 +2,23 @@ from youtube import db
 from passlib.hash import pbkdf2_sha256 as sha256
 import datetime
 
+class TokenModel(db.Model):
+	__tablename__ = 'token'
+
+	id = db.Column(db.Integer, primary_key=True)
+	code = db.Column(db.String(120), unique=True, nullable=False)
+	user_id = db.Column(db.Integer, nullable=False)
+	expired_at = db.Column(db.Date, nullable=False)
+
+	def save_to_db(self):
+		db.session.add(self)
+		db.session.commit()
+
+	@classmethod
+	def get_token_bdd(cls, token):
+		return cls.query.filter_by(code = token).first()
+
+
 class UserModel(db.Model):
 	__tablename__ = 'user'
 
@@ -17,24 +34,32 @@ class UserModel(db.Model):
 		db.session.commit()
 
 	@classmethod
-	def find_by_username(cls, username):
+	def get_user_by_username(cls, username):
 		return cls.query.filter_by(username = username).first()
 
 	@classmethod
-	def return_all(cls):
+	def get_user_by_id(cls, id):
+		return cls.query.filter_by(id = id).first()
+
+	@classmethod
+	def delete_user_by_id(cls, id):
+		return cls.query.filter_by(id = id).delete()
+
+	@classmethod
+	def get_all_users(cls):
 		def to_json(x):
 			return {
 				'id': x.id,
 				'username': x.username,
 				'pseudo': x.pseudo,
-				'created_at': str(x.created_at),
-				'email': x.email
+				'created_at': str(x.created_at)
 			}
 		return {
 			'message': 'OK',
 			'data': list(map(lambda x: to_json(x), UserModel.query.all()))
 		}
 
+	"""
 	@classmethod
 	def delete_all(cls):
 		try:
@@ -43,6 +68,7 @@ class UserModel(db.Model):
 			return {'message': '{} row(s) deleted'.format(num_rows_deleted)}
 		except:
 			return {'message': 'Something went wrong'}
+	"""
 
 	@staticmethod
 	def generate_hash(password):

@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 import os
 
+
 app = Flask(__name__)
 api = Api(app)
 
@@ -32,14 +33,15 @@ def check_if_token_in_blacklist(decrypted_token):
 	return models.RevokedTokenModel.is_jti_blacklisted(jti)
 
 
-import views, models, resources
+import views, models, resources, user
 
 api.add_resource(resources.UserCreate, '/user')
 api.add_resource(resources.UserAuthentication, '/auth')
 api.add_resource(resources.UserLogoutAccess, '/logout/access')
 api.add_resource(resources.UserLogoutRefresh, '/logout/refresh')
 api.add_resource(resources.TokenRefresh, '/token/refresh')
-api.add_resource(resources.AllUsers, '/users')
+api.add_resource(user.GetAllUsers, '/users')
+api.add_resource(user.User, '/user/<int:id>')
 api.add_resource(resources.SecretResource, '/secret')
 
 if __name__ == '__main__' :
