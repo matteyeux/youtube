@@ -2,6 +2,23 @@ from youtube import db
 from passlib.hash import pbkdf2_sha256 as sha256
 import datetime
 
+class TokenModel(db.Model):
+	__tablename__ = 'token'
+
+	id = db.Column(db.Integer, primary_key=True)
+	code = db.Column(db.String(120), unique=True, nullable=False)
+	user_id = db.Column(db.Integer, nullable=False)
+	expired_at = db.Column(db.Date, nullable=False)
+
+	def save_to_db(self):
+		db.session.add(self)
+		db.session.commit()
+
+	@classmethod
+	def get_token_bdd(cls, token):
+		return cls.query.filter_by(code = token).first()
+
+
 class UserModel(db.Model):
 	__tablename__ = 'user'
 
@@ -35,8 +52,7 @@ class UserModel(db.Model):
 				'id': x.id,
 				'username': x.username,
 				'pseudo': x.pseudo,
-				'created_at': str(x.created_at),
-				'email': x.email
+				'created_at': str(x.created_at)
 			}
 		return {
 			'message': 'OK',

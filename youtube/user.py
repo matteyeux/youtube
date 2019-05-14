@@ -1,11 +1,13 @@
 from flask_restful import Resource, reqparse
 from models import UserModel
+from resources import is_authentified, actual_user_id
 import jsonify
 
 class User(Resource):
 	def get(self, id):
 		result = UserModel.get_user_by_id(id)
-		if result:
+		user_id = actual_user_id()
+		if result and user_id==id:
 			return {
 				'message': 'OK',
 				'data': {
@@ -14,6 +16,16 @@ class User(Resource):
 					'pseudo': result.pseudo,
 					'created_at': str(result.created_at),
 					'email': result.email
+				}
+			}
+		elif result:
+			return {
+				'message': 'OK',
+				'data': {
+					'id': result.id,
+					'username': result.username,
+					'pseudo': result.pseudo,
+					'created_at': str(result.created_at),
 				}
 			}
 		else:

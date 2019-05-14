@@ -41,7 +41,7 @@ api.add_resource(resources.UserLogoutAccess, '/logout/access')
 api.add_resource(resources.UserLogoutRefresh, '/logout/refresh')
 api.add_resource(resources.TokenRefresh, '/token/refresh')
 api.add_resource(user.GetAllUsers, '/users')
-api.add_resource(user.User, '/user/<id>')
+api.add_resource(user.User, '/user/<int:id>')
 api.add_resource(resources.SecretResource, '/secret')
 
 if __name__ == '__main__' :
