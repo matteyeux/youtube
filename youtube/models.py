@@ -18,6 +18,10 @@ class TokenModel(db.Model):
 	def get_token_bdd(cls, token):
 		return cls.query.filter_by(code = token).first()
 
+	@classmethod
+	def delete_all_token_by_user_id(cls, user_id):
+		return cls.query.filter_by(user_id = user_id).delete()
+
 
 class UserModel(db.Model):
 	__tablename__ = 'user'
