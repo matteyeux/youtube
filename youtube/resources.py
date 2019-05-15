@@ -136,3 +136,10 @@ def actual_user_id():
 	if user:
 		return user.user_id
 
+def is_user_connected(id):
+	user_id = actual_user_id()
+	if user_id==id:
+		print('BEWWWWAAA')
+		return True
+	else:
+		return False

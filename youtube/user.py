@@ -1,6 +1,6 @@
 from flask_restful import Resource, reqparse
 from models import UserModel
-from resources import is_authentified, actual_user_id
+from resources import is_authentified, actual_user_id, is_user_connected
 import jsonify
 
 
@@ -8,14 +8,13 @@ class User(Resource):
 	# Get user information
 	def get(self, id):
 		result = UserModel.get_user_by_id(id)
-		user_id = actual_user_id()
 		data = {
 			'id': result.id,
 			'username': result.username,
 			'pseudo': result.pseudo,
 			'created_at': str(result.created_at),
 		}
-		if user_id==id:
+		if is_user_connected(id):
 			data.update({'email': result.email})
 		if result:
 			return { 'message': 'OK', 'data': data}
@@ -25,9 +24,11 @@ class User(Resource):
 	# Delete user
 	def delete(self, id):
 		result = UserModel.get_user_by_id(id)
-		if result:
+		if result and is_user_connected(id):
 			UserModel.delete_user_by_id(id)
 			return {}, 204
+		elif result:
+			return {"message": "Forbidden"}, 403
 		else:
 			return { 'message': 'Not found'}, 404
 
