@@ -133,6 +133,6 @@ def is_authentified():
 
 def actual_user_id():
 	user = TokenModel.get_token_bdd(token=request.headers.get('Authorization'))
-	return user.user_id
-
+	if user:
+		return user.user_id
 
