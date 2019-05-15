@@ -3,34 +3,26 @@ from models import UserModel
 from resources import is_authentified, actual_user_id
 import jsonify
 
+
 class User(Resource):
+	# Get user information
 	def get(self, id):
 		result = UserModel.get_user_by_id(id)
 		user_id = actual_user_id()
-		if result and user_id==id:
-			return {
-				'message': 'OK',
-				'data': {
-					'id': result.id,
-					'username': result.username,
-					'pseudo': result.pseudo,
-					'created_at': str(result.created_at),
-					'email': result.email
-				}
-			}
-		elif result:
-			return {
-				'message': 'OK',
-				'data': {
-					'id': result.id,
-					'username': result.username,
-					'pseudo': result.pseudo,
-					'created_at': str(result.created_at),
-				}
-			}
+		data = {
+			'id': result.id,
+			'username': result.username,
+			'pseudo': result.pseudo,
+			'created_at': str(result.created_at),
+		}
+		if user_id==id:
+			data.update({'email': result.email})
+		if result:
+			return { 'message': 'OK', 'data': data}
 		else:
 			return { 'message': 'Not found'}, 404
 
+	# Delete user
 	def delete(self, id):
 		result = UserModel.get_user_by_id(id)
 		if result:
