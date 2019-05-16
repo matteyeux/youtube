@@ -18,6 +18,10 @@ class TokenModel(db.Model):
 	def get_token_bdd(cls, token):
 		return cls.query.filter_by(code = token).first()
 
+	@classmethod
+	def delete_all_token_by_user_id(cls, user_id):
+		return cls.query.filter_by(user_id = user_id).delete()
+
 
 class UserModel(db.Model):
 	__tablename__ = 'user'
@@ -34,8 +38,21 @@ class UserModel(db.Model):
 		db.session.commit()
 
 	@classmethod
+	def update_user_by_id(cls, data_user):
+		user = cls.query.filter_by(id=data_user.id).first()
+		user.username = data_user.username
+		user.pseudo = data_user.pseudo
+		user.email = data_user.email
+		user.password = data_user.password
+		db.session.commit()
+
+	@classmethod
 	def get_user_by_username(cls, username):
 		return cls.query.filter_by(username = username).first()
+
+	@classmethod
+	def get_user_by_email(cls, email):
+		return cls.query.filter_by(email = email).first()
 
 	@classmethod
 	def get_user_by_id(cls, id):
@@ -43,7 +60,9 @@ class UserModel(db.Model):
 
 	@classmethod
 	def delete_user_by_id(cls, id):
-		return cls.query.filter_by(id = id).delete()
+		result = cls.query.filter_by(id = id).delete()
+		db.session.commit()
+		return result
 
 	@classmethod
 	def get_all_users(cls):
