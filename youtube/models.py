@@ -65,18 +65,20 @@ class UserModel(db.Model):
 		return result
 
 	@classmethod
-	def get_all_users(cls):
-		def to_json(x):
-			return {
-				'id': x.id,
-				'username': x.username,
-				'pseudo': x.pseudo,
-				'created_at': str(x.created_at)
-			}
+	def get_all_users(cls, pseudo):
+		return cls.query.filter(UserModel.pseudo.like('%'+pseudo+'%')).all()
+
+	"""def to_json(x):
 		return {
-			'message': 'OK',
-			'data': list(map(lambda x: to_json(x), UserModel.query.all()))
+			'id': x.id,
+			'username': x.username,
+			'pseudo': x.pseudo,
+			'created_at': str(x.created_at)
 		}
+	return {
+		'message': 'OK',
+		'data': list(map(lambda x: to_json(x), UserModel.query.filter_by(pseudo='test')))
+	}"""
 
 	"""
 	@classmethod

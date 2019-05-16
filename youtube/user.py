@@ -82,9 +82,23 @@ class User(Resource):
 # List all users
 class GetAllUsers(Resource):
 	def get(self):
-		user_list = UserModel.get_all_users()
-		if user_list["data"]:
-			return user_list
+		parser = reqparse.RequestParser()
+		parser.add_argument('pseudo', help='This field cannot be blank', required=False)
+		json = parser.parse_args()
+
+		result = UserModel.get_all_users(json["pseudo"])
+		datum = []
+		for data in result:
+			datum.append({
+				'id': data.id,
+				'username': data.username,
+				'pseudo': data.pseudo,
+				'created_at': str(data.created_at),
+				'email': data.email
+			})
+		#user_list = UserModel.get_all_users()
+		if result:
+			return { 'message': 'OK', 'data': datum }
 		else:
 			return { 'message': 'Not found'}, 404
 
