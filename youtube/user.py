@@ -34,22 +34,37 @@ class User(Resource):
 			parser.add_argument('password', help='This field cannot be blank', required=True)
 			data = parser.parse_args()
 
-			data = UserModel(
+			data_user = UserModel(
 				id=id,
 				username=data['username'],
 				pseudo=data['pseudo'],
 				email=data['email'],
 				password=UserModel.generate_hash(data['password'])
 			)
+			UserModel.update_user_by_id(data_user)
 
-			UserModel.update_user_by_id(data)
+			data = {
+				'id': result.id,
+				'username': result.username,
+				'pseudo': result.pseudo,
+				'created_at': str(result.created_at),
+			}
+			if is_user_connected(id):
+				data.update({'email': result.email})
 
-			return 'ok'
+			result = UserModel.get_user_by_id(id)
+			if result:
+				data = {
+					'id': result.id,
+					'username': result.username,
+					'pseudo': result.pseudo,
+					'created_at': str(result.created_at),
+					'email': result.email
+				}
+			return {'message': 'OK', 'data': data}
 
 		else:
 			return {'message': 'Not found'}, 404
-
-
 
 	# Delete user
 	def delete(self, id):
