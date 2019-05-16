@@ -47,7 +47,9 @@ class UserModel(db.Model):
 
 	@classmethod
 	def delete_user_by_id(cls, id):
-		return cls.query.filter_by(id = id).delete()
+		result = cls.query.filter_by(id = id).delete()
+		db.session.commit()
+		return result
 
 	@classmethod
 	def get_all_users(cls):
