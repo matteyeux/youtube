@@ -3,20 +3,19 @@ from models import UserModel, TokenModel
 from resources import is_authentified, actual_user_id, is_user_connected
 import jsonify
 
-
 class User(Resource):
 	# Get user information
 	def get(self, id):
 		result = UserModel.get_user_by_id(id)
-		data = {
-			'id': result.id,
-			'username': result.username,
-			'pseudo': result.pseudo,
-			'created_at': str(result.created_at),
-		}
-		if is_user_connected(id):
-			data.update({'email': result.email})
 		if result:
+			data = {
+				'id': result.id,
+				'username': result.username,
+				'pseudo': result.pseudo,
+				'created_at': str(result.created_at),
+			}
+			if is_user_connected(id):
+				data.update({'email': result.email})
 			return { 'message': 'OK', 'data': data}
 		else:
 			return { 'message': 'Not found'}, 404
