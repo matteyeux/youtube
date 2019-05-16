@@ -21,48 +21,46 @@ class User(Resource):
 			return { 'message': 'Not found'}, 404
 
 	def put(self, id):
+		parser = reqparse.RequestParser()
+		parser.add_argument('username', help='This field cannot be blank', required=True)
+		parser.add_argument('pseudo', help='This field cannot be blank', required=False)
+		parser.add_argument('email', help='This field cannot be blank', required=False)
+		parser.add_argument('password', help='This field cannot be blank', required=True)
+		data = parser.parse_args()
+
+		data_user = UserModel(
+			id=id,
+			username=data['username'],
+			pseudo=data['pseudo'],
+			email=data['email'],
+			password=UserModel.generate_hash(data['password'])
+		)
+
 		if is_authentified()!=True:
 			return {"message": "Unauthorized"}, 401
 		if is_user_connected(id)!=True:
 			return {"message": "Forbidden"}, 403
+
 		result = UserModel.get_user_by_id(id)
 		if result:
-			parser = reqparse.RequestParser()
-			parser.add_argument('username', help='This field cannot be blank', required=True)
-			parser.add_argument('pseudo', help='This field cannot be blank', required=False)
-			parser.add_argument('email', help='This field cannot be blank', required=False)
-			parser.add_argument('password', help='This field cannot be blank', required=True)
-			data = parser.parse_args()
+			check_by_username = UserModel.get_user_by_username(data_user.username)
+			if check_by_username and check_by_username.id!=id:
+				return {"message": "Bad Request", 'Code': "1001 => username existe déja"}
 
-			data_user = UserModel(
-				id=id,
-				username=data['username'],
-				pseudo=data['pseudo'],
-				email=data['email'],
-				password=UserModel.generate_hash(data['password'])
-			)
+			check_by_email = UserModel.get_user_by_email(data_user.email)
+			if check_by_email and check_by_email.id!=id:
+				return {"message": "Bad Request", 'Code': "1002 => email existe déja"}
+
 			UserModel.update_user_by_id(data_user)
-
+			result = UserModel.get_user_by_id(id)
 			data = {
 				'id': result.id,
 				'username': result.username,
 				'pseudo': result.pseudo,
 				'created_at': str(result.created_at),
+				'email': result.email
 			}
-			if is_user_connected(id):
-				data.update({'email': result.email})
-
-			result = UserModel.get_user_by_id(id)
-			if result:
-				data = {
-					'id': result.id,
-					'username': result.username,
-					'pseudo': result.pseudo,
-					'created_at': str(result.created_at),
-					'email': result.email
-				}
 			return {'message': 'OK', 'data': data}
-
 		else:
 			return {'message': 'Not found'}, 404
 
