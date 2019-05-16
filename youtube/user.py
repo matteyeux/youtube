@@ -38,7 +38,11 @@ class User(Resource):
 # List all users
 class GetAllUsers(Resource):
 	def get(self):
-		return UserModel.get_all_users()
+		user_list = UserModel.get_all_users()
+		if user_list["data"]:
+			return user_list
+		else:
+			return { 'message': 'Not found'}, 404
 
 	#def delete(self):
 	#	return UserModel.delete_all()
