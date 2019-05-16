@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from flask import Flask
+from flask import Flask, jsonify
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
@@ -15,6 +15,15 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.urandom(24)
 
 db = SQLAlchemy(app)
+
+# TODO : Put Index and page_not_found in file 'wiews'
+@app.route('/')
+def index():
+	return 'Welcome on API Youtube'
+
+@app.errorhandler(404)
+def page_not_found(e):
+	return jsonify({'message': 'Not found'}), 404
 
 @app.before_first_request
 def create_tables():
