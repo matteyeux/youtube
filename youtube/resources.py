@@ -128,8 +128,6 @@ def insert_token_bdd(token, user_id):
 def is_authentified():
 	if TokenModel.get_token_bdd(token=request.headers.get('Authorization')):
 		return True
-	else:
-		return False
 
 def actual_user_id():
 	user = TokenModel.get_token_bdd(token=request.headers.get('Authorization'))
@@ -139,8 +137,6 @@ def actual_user_id():
 def is_user_connected(id):
 	user_id = actual_user_id()
 	if user_id==id:
-		print('BEWWWWAAA')
 		return True
 	else:
-		print(user_id)
 		return False

@@ -22,6 +22,8 @@ class User(Resource):
 
 	# Delete user
 	def delete(self, id):
+		if is_authentified()!=True:
+			return {"message": "Unauthorized"}, 401
 		result = UserModel.get_user_by_id(id)
 		if result and is_user_connected(id):
 			TokenModel.delete_all_token_by_user_id(id)
@@ -40,7 +42,6 @@ class GetAllUsers(Resource):
 
 	#def delete(self):
 	#	return UserModel.delete_all()
-
 
 
 
