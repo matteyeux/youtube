@@ -20,6 +20,37 @@ class User(Resource):
 		else:
 			return { 'message': 'Not found'}, 404
 
+	def put(self, id):
+		if is_authentified()!=True:
+			return {"message": "Unauthorized"}, 401
+		if is_user_connected(id)!=True:
+			return {"message": "Forbidden"}, 403
+		result = UserModel.get_user_by_id(id)
+		if result:
+			parser = reqparse.RequestParser()
+			parser.add_argument('username', help='This field cannot be blank', required=True)
+			parser.add_argument('pseudo', help='This field cannot be blank', required=False)
+			parser.add_argument('email', help='This field cannot be blank', required=False)
+			parser.add_argument('password', help='This field cannot be blank', required=True)
+			data = parser.parse_args()
+
+			data = UserModel(
+				id=id,
+				username=data['username'],
+				pseudo=data['pseudo'],
+				email=data['email'],
+				password=UserModel.generate_hash(data['password'])
+			)
+
+			UserModel.update_user_by_id(data)
+
+			return 'ok'
+
+		else:
+			return {'message': 'Not found'}, 404
+
+
+
 	# Delete user
 	def delete(self, id):
 		if is_authentified()!=True:

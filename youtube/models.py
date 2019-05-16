@@ -38,6 +38,14 @@ class UserModel(db.Model):
 		db.session.commit()
 
 	@classmethod
+	def update_user_by_id(cls, data):
+		user = cls.query.filter_by(id=data.id).first()
+		user.pseudo = data.pseudo
+		user.email = data.email
+		user.password = data.password
+		db.session.commit()
+
+	@classmethod
 	def get_user_by_username(cls, username):
 		return cls.query.filter_by(username = username).first()
 
