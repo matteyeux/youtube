@@ -1,3 +1,4 @@
+from pymediainfo import MediaInfo
 from flask_restful import Resource, reqparse, request
 from models import UserModel, RevokedTokenModel, VideoModel
 from werkzeug.utils import secure_filename
@@ -11,19 +12,21 @@ class VideoCreate(Resource):
 	def post(self):
 		data = parser.parse_args()
 
-		new_video = VideoModel(
-			name = data["name"],
-			duration = 0,
-			user_id = 25,
-			source = "ppfffrtrt",
-			created_at = datetime.datetime.now(),
-			view = 1,
-			enabled = False
-		)
-
+		if VideoCreate.import_data(self, request.files['source']) is None:
+			return {'message': 'Bad Request', 'code' : 2001, 'data' : 'Not a video'}, 400
 		try:
+			new_video = VideoModel(
+				name = data["name"],
+				duration = 0,
+				user_id = 25,
+				source = app.config['VIDEO_FOLDER'] + data["name"],
+				created_at = datetime.datetime.now(),
+				view = 0,
+				enabled = True
+			)
+
 			new_video.save_to_db()
-			VideoCreate.import_data(self, request.files['source'])
+
 			return {
 				'message': 'OK',
 				'data': {
@@ -31,25 +34,32 @@ class VideoCreate(Resource):
 				}
 			}, 201
 		except:
-			return {'message': 'Something went wrong'}, 400
+			return {'message': 'Bad Request', 'code' : 2002, 'data' : 'failed to save video'}, 400
 
 	# Import video file into the server
 	def import_data(self, file):
 		try:
+			if file.content_type.split('/')[0] != "video":
+				print("none : %s" % file.content_type.split('/')[0])
+				return None
 			filename = secure_filename(file.filename)
 			file.save(os.path.join(app.config['VIDEO_FOLDER'], filename))
-			url = os.path.join(app.config['VIDEO_URL'], filename)
 			self.image_filename = filename
 		except:
-			return {'message': 'Something went wrong'}, 400
+			return {'message': 'Bad Request', 'code' : 2003, 'data' : 'failed to import video'}, 400
 		return self
 
 class AllVideos(Resource):
 	def get(self):
 		return VideoModel.return_all()
 
-# video check 
-# fileInfo = MediaInfo.parse('some/file/name.ext')
-# for track in fileInfo.tracks:
-#     if track.track_type == "Video":
-#         # success!
+# class VideoDelete(Resource):
+# 	def delete(self, id):
+# 		result = VideoModel.get_user_by_id(id)
+
+def is_video(imported_file):
+	media_info = MediaInfo.parse(imported_file)
+	for track in media_info.tracks:
+		if track.track_type == 'Video':
+			return True
+	return False

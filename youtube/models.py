@@ -1,4 +1,4 @@
-from youtube import db
+from youtube import db, app
 from passlib.hash import pbkdf2_sha256 as sha256
 import datetime
 
@@ -114,7 +114,17 @@ class VideoModel(db.Model):
 		def to_json(x):
 			return {
 				'message': "OK",
-				'view': str(x.view),
+				'data': {
+					"id" : x.id,
+					"source" : x.source,
+					"created_at" : str(x.created_at),
+					"view" : x.view,
+					"enabled" : x.enabled,
+					"user" : x.user_id,
+					"format" : {
+						"1080" : app.config['VIDEO_URL'] + x.name
+					}
+				}
 			}
 		return {
 			'message': 'OK',
