@@ -13,6 +13,8 @@ api = Api(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://youtube:youtube@localhost/youtube'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.urandom(24)
+app.config['VIDEO_FOLDER'] = "videos"
+app.config['VIDEO_URL'] = "http://127.0.0.1:5000/videos" # not used for the moment
 
 db = SQLAlchemy(app)
 
@@ -42,7 +44,7 @@ def check_if_token_in_blacklist(decrypted_token):
 	return models.RevokedTokenModel.is_jti_blacklisted(jti)
 
 
-import views, models, resources, user
+import views, models, resources, user, video
 
 api.add_resource(resources.UserCreate, '/user')
 api.add_resource(resources.UserAuthentication, '/auth')
@@ -52,6 +54,8 @@ api.add_resource(resources.TokenRefresh, '/token/refresh')
 api.add_resource(user.GetAllUsers, '/users')
 api.add_resource(user.User, '/user/<int:id>')
 api.add_resource(resources.SecretResource, '/secret')
+api.add_resource(video.AllVideos, '/videos')
+api.add_resource(video.VideoCreate, '/video')
 
 if __name__ == '__main__' :
 	app.run(debug=True, host='0.0.0.0', port=5000)

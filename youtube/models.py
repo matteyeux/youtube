@@ -92,3 +92,31 @@ class RevokedTokenModel(db.Model):
 	def is_jti_blacklisted(cls, jti):
 		query = cls.query.filter_by(jti = jti).first()
 		return bool(query)
+
+class VideoModel(db.Model):
+	__tablename__ = 'video'
+
+	id = db.Column(db.Integer, primary_key = True)
+	name = db.Column(db.String(45), nullable = False)
+	duration = db.Column(db.Integer, nullable = True)
+	user_id = db.Column(db.Integer, nullable = False)
+	source = db.Column(db.String(45), nullable = False)
+	created_at = db.Column(db.Date, nullable = False)
+	view = db.Column(db.Integer, nullable = False)
+	enabled = db.Column(db.Integer, nullable = False)
+
+	def save_to_db(self):
+		db.session.add(self)
+		db.session.commit()
+
+	@classmethod
+	def return_all(cls):
+		def to_json(x):
+			return {
+				'message': "OK",
+				'view': str(x.view),
+			}
+		return {
+			'message': 'OK',
+			'data': list(map(lambda x: to_json(x), VideoModel.query.all()))
+		}
