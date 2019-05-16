@@ -142,4 +142,5 @@ def is_user_connected(id):
 		print('BEWWWWAAA')
 		return True
 	else:
+		print(user_id)
 		return False

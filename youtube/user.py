@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse
-from models import UserModel
+from models import UserModel, TokenModel
 from resources import is_authentified, actual_user_id, is_user_connected
 import jsonify
 
@@ -25,6 +25,7 @@ class User(Resource):
 	def delete(self, id):
 		result = UserModel.get_user_by_id(id)
 		if result and is_user_connected(id):
+			TokenModel.delete_all_token_by_user_id(id)
 			UserModel.delete_user_by_id(id)
 			return {}, 204
 		elif result:
