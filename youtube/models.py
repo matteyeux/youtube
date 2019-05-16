@@ -130,3 +130,11 @@ class VideoModel(db.Model):
 			'message': 'OK',
 			'data': list(map(lambda x: to_json(x), VideoModel.query.all()))
 		}
+
+	@classmethod
+	def get_video_by_id(cls, id):
+		return cls.query.filter_by(id = id).first()
+
+	@classmethod
+	def delete_video_by_id(cls, id):
+		return cls.query.filter_by(id = id).delete()

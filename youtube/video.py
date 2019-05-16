@@ -53,9 +53,15 @@ class AllVideos(Resource):
 	def get(self):
 		return VideoModel.return_all()
 
-# class VideoDelete(Resource):
-# 	def delete(self, id):
-# 		result = VideoModel.get_user_by_id(id)
+class VideoDelete(Resource):
+	def delete(self, id):
+		print("here yo")
+		result = VideoModel.get_video_by_id(id)
+		if result :
+			VideoModel.delete_video_by_id(id)
+			print("go delete")
+		#print("video" + result)
+		#os.remove("video" + result)
 
 def is_video(imported_file):
 	media_info = MediaInfo.parse(imported_file)

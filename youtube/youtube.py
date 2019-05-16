@@ -56,6 +56,7 @@ api.add_resource(user.User, '/user/<int:id>')
 api.add_resource(resources.SecretResource, '/secret')
 api.add_resource(video.AllVideos, '/videos')
 api.add_resource(video.VideoCreate, '/video')
+api.add_resource(video.VideoDelete, '/video/<int:id>')
 
 if __name__ == '__main__' :
 	app.run(debug=True, host='0.0.0.0', port=5000)
