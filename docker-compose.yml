@@ -1,0 +1,19 @@
+# docker-compose
+# used for MyYoutube microservices
+version: '2'
+
+services:
+  api:
+    build: .
+    ports:
+      - "5000:5000"
+  db:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: youtube
+      MYSQL_DATABASE: youtube
+      MYSQL_USER: youtube
+      MYSQL_PASSWORD: youtube
+    ports:
+      - "9906:3306"
+
