@@ -21,6 +21,7 @@
 
 DROP DATABASE IF EXISTS youtube;
 CREATE DATABASE IF NOT EXISTS youtube;
+USE youtube;
 
 DROP TABLE IF EXISTS `comment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

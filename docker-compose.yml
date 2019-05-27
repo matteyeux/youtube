@@ -13,6 +13,7 @@ services:
       youtube_net:
         ipv4_address: "172.16.0.10"
   db:
+    restart: always
     image: mariadb:latest
     environment:
       MYSQL_ROOT_PASSWORD: youtube
@@ -21,9 +22,9 @@ services:
       MYSQL_PASSWORD: youtube
     ports:
       - "9906:3306"
-    command: --init-file /youtube_v2.sql
+    command: --init-file /data/youtube_v2.sql --bind-address=0.0.0.0
     volumes:
-      - ./resources/youtube_v2.sql:/youtube_v2.sql
+      - ./resources/:/data
     networks:
       youtube_net:
         ipv4_address: "172.16.0.11"
