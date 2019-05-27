@@ -19,6 +19,9 @@
 -- Table structure for table `comment`
 --
 
+DROP DATABASE IF EXISTS youtube;
+CREATE DATABASE IF NOT EXISTS youtube;
+
 DROP TABLE IF EXISTS `comment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;

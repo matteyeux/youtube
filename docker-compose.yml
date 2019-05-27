@@ -5,8 +5,12 @@ version: '2'
 services:
   api:
     build: ./api
+    links:
+      - db
     ports:
       - "5000:5000"
+    volumes:
+      - ./api:/api
   db:
     image: mariadb:latest
     environment:
@@ -16,4 +20,7 @@ services:
       MYSQL_PASSWORD: youtube
     ports:
       - "9906:3306"
+    command: --init-file /youtube_v2.sql
+    volumes:
+      - ./resources/youtube_v2.sql:/youtube_v2.sql
 
