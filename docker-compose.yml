@@ -9,6 +9,9 @@ services:
       - db
     ports:
       - "5000:5000"
+    networks:
+      youtube_net:
+        ipv4_address: "172.16.0.10"
   db:
     image: mariadb:latest
     environment:
@@ -21,4 +24,13 @@ services:
     command: --init-file /youtube_v2.sql
     volumes:
       - ./resources/youtube_v2.sql:/youtube_v2.sql
+    networks:
+      youtube_net:
+        ipv4_address: "172.16.0.11"
 
+networks:
+  youtube_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.0.0/24
