@@ -4,13 +4,11 @@ version: '2'
 
 services:
   api:
-    build: ./api
+    build: api
     links:
       - db
     ports:
       - "5000:5000"
-    volumes:
-      - ./api:/api
   db:
     image: mariadb:latest
     environment:
