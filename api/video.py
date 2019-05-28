@@ -55,7 +55,6 @@ class AllVideos(Resource):
 
 class VideoDelete(Resource):
 	def delete(self, id):
-		print("here yo")
 		result = VideoModel.get_video_by_id(id)
 		if result :
 			VideoModel.delete_video_by_id(id)
