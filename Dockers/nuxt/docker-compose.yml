@@ -1,0 +1,13 @@
+# docker-compose
+# used for MyYoutube microservices
+version: '2'
+
+services:
+  vue:
+    build: .
+    container_name: yt_nuxt_yop
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./my_app:/usr/src/nuxt-app
+    tty: true
