@@ -8,4 +8,5 @@ WORKDIR /usr/src/nuxt-app
 ENV HOST=0.0.0.0
 
 # Run the server
+CMD ["npm", "install"]
 CMD ["npm", "run", "dev"]
