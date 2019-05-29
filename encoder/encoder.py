@@ -60,7 +60,7 @@ def set_resolution(video):
 
 if __name__ == '__main__':
 	if len(sys.argv) != 2:
-		print("usage : %s [video]" % sys.argv[1])
+		print("usage : %s [video]" % sys.argv[0])
 		sys.exit(1)
 
 	set_resolution(sys.argv[1])
