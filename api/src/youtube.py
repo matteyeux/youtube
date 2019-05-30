@@ -9,7 +9,7 @@ import os
 app = Flask(__name__)
 api = Api(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://youtube:youtube@172.16.0.11:9906/youtube'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://youtube:youtube@172.16.0.11:3306/youtube'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.urandom(24)
 app.config['VIDEO_FOLDER'] = "../videos"

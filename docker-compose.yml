@@ -3,40 +3,42 @@
 version: '2'
 
 services:
+  db:
+    image: mysql:5.7
+    restart: always
+    container_name: yt_db
+    environment:
+      MYSQL_DATABASE: 'youtube'
+      MYSQL_USER: 'youtube'
+      MYSQL_PASSWORD: 'youtube'
+      MYSQL_ROOT_PASSWORD: 'youtube'
+    ports:
+      - '3306:3306'
+    expose:
+      # Opens port 3306 on the container
+      - '3306'
+    command: --init-file /data/youtube_v2.sql
+    volumes:
+      - ./resources/:/data
+    networks:
+      youtube_net:
+        ipv4_address: "172.16.0.11"
   api:
     build: api
     container_name: yt_api
+    depends_on:
+      - db
     volumes:
       - ./api/src:/api
-#    links:
-#      - db
     ports:
       - "5000:5000"
     tty: true
-#    networks:
-#      youtube_net:
-#        ipv4_address: "172.16.0.10"
-#  db:
-#    restart: always
-#    image: mariadb:latest
-#    container_name: yt_db
-#    environment:
-#      MYSQL_ROOT_PASSWORD: youtube
-#      MYSQL_DATABASE: youtube
-#      MYSQL_USER: youtube
-#      MYSQL_PASSWORD: youtube
-#    ports:
-#      - "9906:3306"
-#    command: --init-file /data/youtube_v2.sql --bind-address=0.0.0.0
-#    volumes:
-#      - ./resources/:/data
-#    networks:
-#      youtube_net:
-#        ipv4_address: "172.16.0.11"
-#
-#networks:
-#  youtube_net:
-#    ipam:
-#      driver: default
-#      config:
-#        - subnet: 172.16.0.0/24
+    networks:
+      youtube_net:
+        ipv4_address: "172.16.0.10"
+networks:
+  youtube_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.0.0/24
