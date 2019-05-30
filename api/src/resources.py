@@ -2,7 +2,7 @@ from flask_restful import Resource, reqparse, request
 from models import UserModel
 from models import UserModel, TokenModel, RevokedTokenModel
 from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
-import datetime, uuid
+import datetime, uuid, re
 
 parser = reqparse.RequestParser()
 parser.add_argument('username', help = 'This field cannot be blank', required = True)
@@ -17,7 +17,30 @@ class UserCreate(Resource):
 		data = parser.parse_args()
 
 		if UserModel.get_user_by_username(data['username']):
-			return {'message': 'User {} already exists'. format(data['username'])}, 400
+			return {
+				'message': 'Bad Request',
+				'code': '1001 => User {} already exists'. format(data['username']),
+				'data': {
+					'username': data["username"],
+					'pseudo': data["pseudo"],
+					'email': data["email"]
+					}
+				}, 400
+
+		if re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', data["email"]) is None:
+			return {"message": "Bad Request", 'Code': "1002 => format email invalide"}, 400
+
+		check_by_email = UserModel.get_user_by_email(data["email"])
+		if check_by_email:
+			return {
+				'message': 'Bad Request',
+				'code': '1002 => email {} already exists'. format(data['email']),
+				'data': {
+					'username': data["username"],
+					'pseudo': data["pseudo"],
+					'email': data["email"]
+					}
+				}, 400
 
 		new_user = UserModel(
 			username = data['username'],
@@ -28,10 +51,9 @@ class UserCreate(Resource):
 		)
 		try:
 			new_user.save_to_db()
+			current_user = UserModel.get_user_by_username(data['username'])
 			access_token = create_access_token(identity = data['username'])
 			refresh_token = create_refresh_token(identity = data['username'])
-
-			current_user = UserModel.get_user_by_username(data['username'])
 			return {
 				'message': 'OK',
 				'data': {
@@ -43,7 +65,7 @@ class UserCreate(Resource):
 					}
 			}, 201
 		except:
-			return {'message': 'Something went wrong'}, 500
+				return {'message': 'Fatal Error'}, 500
 
 class UserAuthentication(Resource):
 	def post(self):
@@ -51,12 +73,18 @@ class UserAuthentication(Resource):
 		current_user = UserModel.get_user_by_username(data['username'])
 
 		if not current_user:
-			return {'message': 'User {} doesn\'t exist'.format(data['username'])}
+			return {
+				'message': 'Bad Request',
+				'code': '1003 => User {} doesn\'t exist'.format(data['username']),
+				'data': {
+					'username': data.username
+					}
+				}, 400
 
 		if UserModel.verify_hash(data['password'], current_user.password):
-			#access_token = create_access_token(identity = data['username'])
 			the_uuid = uuid.uuid4()
 			insert_token_bdd(str(the_uuid), current_user.id)
+			access_token = create_access_token(identity = data['username'])
 			refresh_token = create_refresh_token(identity = data['username'])
 			return {
 				'message': 'OK',
@@ -72,7 +100,13 @@ class UserAuthentication(Resource):
 					}
 				}, 201
 		else:
-			return {'message': 'Wrong credentials'}, 500
+			return {
+				'message': 'Bad Request',
+				'code': '1004 => Wrong credentials',
+				'data': {
+					'username': data.username
+					}
+				}, 400
 
 class UserLogoutAccess(Resource):
 	@jwt_required
@@ -102,15 +136,6 @@ class TokenRefresh(Resource):
 		current_user = get_jwt_identity()
 		access_token = create_access_token(identity = current_user)
 		return {'access_token': access_token}
-
-
-class SecretResource(Resource):
-	#@jwt_required
-	def get(self):
-		if is_authentified():
-			return {'answer': 'Message a la con'}
-		else:
-			return {'message': 'Vachier Cordialement'}
 
 
 def insert_token_bdd(token, user_id):

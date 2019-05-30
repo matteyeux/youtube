@@ -70,29 +70,6 @@ class UserModel(db.Model):
 			pseudo = ""
 		return cls.query.filter(UserModel.pseudo.like('%'+pseudo+'%')).all()
 
-	"""def to_json(x):
-		return {
-			'id': x.id,
-			'username': x.username,
-			'pseudo': x.pseudo,
-			'created_at': str(x.created_at)
-		}
-	return {
-		'message': 'OK',
-		'data': list(map(lambda x: to_json(x), UserModel.query.filter_by(pseudo='test')))
-	}"""
-
-	"""
-	@classmethod
-	def delete_all(cls):
-		try:
-			num_rows_deleted = db.session.query(cls).delete()
-			db.session.commit()
-			return {'message': '{} row(s) deleted'.format(num_rows_deleted)}
-		except:
-			return {'message': 'Something went wrong'}
-	"""
-
 	@staticmethod
 	def generate_hash(password):
 		return sha256.hash(password)
@@ -160,4 +137,31 @@ class VideoModel(db.Model):
 
 	@classmethod
 	def delete_video_by_id(cls, id):
-		return cls.query.filter_by(id = id).delete()
+		result = cls.query.filter_by(id = id).delete()
+		db.session.commit()
+		return result
+
+
+class CommentModel(db.Model):
+	__tablename__ = 'comment'
+
+	id = db.Column(db.Integer, primary_key = True)
+	body = db.Column(db.String(120), nullable = False)
+	user_id = db.Column(db.Integer, nullable = False)
+	video_id = db.Column(db.Integer, nullable = False)
+
+	def save_to_db(self):
+		db.session.add(self)
+		db.session.commit()
+
+	@classmethod
+	def get_comment_by_id(cls, id):
+		return cls.query.filter_by(id = id).first()
+
+	@classmethod
+	def get_all_comments_by_user_id(cls, user_id):
+		return cls.query.filter_by(user_id = user_id)
+
+	@classmethod
+	def get_all_comments_by_video_id(cls, video_id):
+		return cls.query.filter_by(video_id = video_id)
