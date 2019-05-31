@@ -165,3 +165,18 @@ def is_user_connected(id):
 		return True
 	else:
 		return False
+
+def paging(results, page, perPage):
+	first_id_result = (page - 1) * perPage
+	last_id_result = (page * perPage) - 1
+
+	if last_id_result > count(results):
+		last_id_result = count(results)
+
+	new_results = []
+	i = first_id_result
+	while i <= last_id_result:
+		new_results.append(results[i])
+		i = i + 1
+
+	return new_results
