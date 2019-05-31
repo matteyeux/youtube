@@ -36,6 +36,17 @@ services:
     networks:
       youtube_net:
         ipv4_address: "172.16.0.10"
+  vue:
+    build: ./front
+    container_name: yt_front
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./front/nuxt-app:/usr/src/nuxt-app
+    tty: true
+    networks:
+      youtube_net:
+        ipv4_address: "172.16.0.20"
 networks:
   youtube_net:
     ipam:
