@@ -147,7 +147,6 @@ CREATE TABLE `video` (
   `created_at` datetime NOT NULL,
   `view` int(11) NOT NULL,
   `enabled` tinyint(1) NOT NULL,
-  `encoded` boolean() NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `fk_video_user_idx` (`user_id`),
   CONSTRAINT `fk_video_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
