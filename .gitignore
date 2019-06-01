@@ -2,3 +2,4 @@ env/
 __pycache__
 *.pyc
 .idea
+front/nuxt-app/node_modules/.cache/

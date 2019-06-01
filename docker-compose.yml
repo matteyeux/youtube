@@ -39,6 +39,7 @@ services:
   vue:
     build: ./front
     container_name: yt_front
+    restart: always
     ports:
       - "3000:3000"
     volumes:
