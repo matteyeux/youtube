@@ -3,13 +3,13 @@
     <h1 class="title">My YT</h1>
     <ul>
       <li>
-        <nuxt-link to="/">Home</nuxt-link>
+        <a href="/">Home</a>
       </li>
       <li>
-        <nuxt-link to="/users/">Users</nuxt-link>
+        <a href="/users/">Users</a>
       </li>
       <li>
-        <nuxt-link to="/about">About</nuxt-link>
+        <a href="/about">About</a>
       </li>
     </ul>
   </header>
