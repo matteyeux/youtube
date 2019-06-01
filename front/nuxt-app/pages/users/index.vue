@@ -5,7 +5,7 @@
       <ul>
         ID - Pseudo - Username<hr/><br/>
         <div v-for="user in users" class="users" :key="user">
-          <nuxt-link v-bind:to="'/users/' + user.id" >{{ user.id }} - {{ user.pseudo}} - {{ user.pseudo }</nuxt-link>
+          <nuxt-link v-bind:to="'/users/' + user.id" >{{ user.id }} - {{ user.pseudo}} - {{ user.email }}</nuxt-link>
         </div>
       </ul>
 
