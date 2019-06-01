@@ -11,7 +11,6 @@
 
     <hr>
     Data Complet :
-    <pre>{{ articles }}</pre>
         <pre>{{ users }}</pre>
    </div>
 </template>
