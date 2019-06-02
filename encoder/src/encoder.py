@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # fmpeg -i input.mp4 -s 320x240 output.mp4
 # pip3 install ffmpeg-python
+
 import ffmpeg
 import sys
 import subprocess
 import os
-import filetype
-from pymediainfo import MediaInfo
+import magic
 
 resolution_types = [
 	["4K", "3840", "2160"],
@@ -18,48 +18,56 @@ resolution_types = [
 ]
 
 def is_video(imported_file):
-	media_info = MediaInfo.parse(imported_file)
-	for track in media_info.tracks:
-		if track.track_type == 'Video':
+	with magic.Magic(flags=magic.MAGIC_MIME_TYPE) as m:
+		if m.id_filename(imported_file).split('/')[0] == "video" :
 			return True
 	return False
 
 def is_mp4(video):
-	type_of_file = filetype.guess(video)
-
-	if type_of_file is None:
-		print("Cannot guess filetype")
-		return False
-	
-	if type_of_file.extension is "mp4":
-		return True
-	else :
-		return False
+	with magic.Magic(flags=magic.MAGIC_MIME_TYPE) as m:
+		if m.id_filename(video).split('/')[1] == "mp4" :
+			return True
+	return False
 
 def convert_to_mp4(vid_input):
 	FNULL = open(os.devnull, 'w')
-	
+
 	# should replace extension to mp4
 	vid_output = vid_input
 	vid_output = vid_output.replace(vid_output.split('.')[-1], "mp4")
-	print("converting to mp4")
+
+	# create ffmpeg subprocess and wait for it
+	# before doing anything else
 	try :
 		p = subprocess.Popen(['ffmpeg', '-i', vid_input, vid_output, '-y'], stdout=FNULL, stderr=FNULL)
 		p.wait()
 	except:
-		print("error")
+		print("ffmpeg failed")
 		sys.exit(1)
 
+	# remove video in uploads
+	os.remove(vid_input)
 	return vid_output
 
-def do_encode(vid_input, width, height):
-	encoding = width + "x" + height
-	vid_output = str(encoding) + "_" + vid_input
+# encode video to a lower resolution
+def do_encode(vid_input, resolution_type):
+	resolution = resolution_type[0]
+	encoding = resolution_type[1] + "x" + resolution_type[2]
+	video_name = vid_input.split('/')[-1].split('.')[0]
+	folder = "video/" + video_name
+	video_path = folder + "/" + resolution
 
-	# don't print anything to stdout nor sterr
+	try :
+		os.mkdir(video_path)
+	except:
+		pass
+
+	vid_output = video_path + "/" + resolution + ".mp4"
+
+	# don't print anything to stdout and sterr
 	FNULL = open(os.devnull, 'w')
 
-	# -n stand for : not overwrite output files in non-interactive mode
+	# -n stands for : not overwrite output files in non-interactive mode
 	# put -y for overwriting
 	try :
 		p = subprocess.Popen(['ffmpeg', '-i', vid_input, '-s', encoding, vid_output, '-n'], stdout=FNULL, stderr=FNULL)
@@ -68,9 +76,10 @@ def do_encode(vid_input, width, height):
 		print("error")
 		sys.exit(1)
 
+# get max resolution of video
 def get_video_res(video):
 	try:
-		probe = ffmpeg.probe(sys.argv[1])
+		probe = ffmpeg.probe(video)
 	except ffmpeg.Error as e:
 		print(e.stderr, file=sys.stderr)
 		sys.exit(1)
@@ -89,24 +98,36 @@ def set_resolution(video):
 	width, height = get_video_res(video)
 	video_res = width * height
 
+	# parse dictionary to get max resolution to use
 	for i in range(len(resolution_types)) :
 		resolution = int(resolution_types[i][1]) * int(resolution_types[i][2])
 		if resolution < video_res:
 			print("encoding in %s" % resolution_types[i][0])
-			do_encode(video, resolution_types[i][1], resolution_types[i][2])
+			do_encode(video, resolution_types[i])
+
+def put_video_in_folder(video):
+	# get width and height of video
+	# compare with dictionary
+	# move to the right folder
+	return True
 
 if __name__ == '__main__':
-	if len(sys.argv) != 2:
-		print("usage : %s [video]" % sys.argv[0])
-		sys.exit(1)
+	try :
+		os.mkdir("video")
+	except :
+		pass
 
-	video = sys.argv[1]
-	
-	if is_video(video) is False:
-		print("file is not video")
-		sys.exit(1)
+	for video in os.listdir("./uploads"):
+		video_path = "./uploads/" + video
+		new_dir = "video/" + video.split('.')[0]
 
-	if is_mp4(video) is False:
-		video = convert_to_mp4(video)
+		os.mkdir(new_dir)
 
-	set_resolution(video)
+		if is_video(video_path) is False:
+			print("file is not video")
+			sys.exit(1)
+
+		if is_mp4(video_path) is False:
+			video = convert_to_mp4(video_path)
+
+		set_resolution(video_path)
