@@ -12,11 +12,6 @@ services:
       MYSQL_USER: 'youtube'
       MYSQL_PASSWORD: 'youtube'
       MYSQL_ROOT_PASSWORD: 'youtube'
-    ports:
-      - '3306:3306'
-    expose:
-      # Opens port 3306 on the container
-      - '3306'
     command: --init-file /data/youtube_v2.sql
     volumes:
       - ./resources/:/data
@@ -30,8 +25,6 @@ services:
       - db
     volumes:
       - ./api/src:/api
-    ports:
-      - "5000:5000"
     tty: true
     networks:
       youtube_net:
@@ -41,7 +34,7 @@ services:
     container_name: yt_front
     restart: always
     ports:
-      - "3000:3000"
+      - "80:3000"
     volumes:
       - ./front/nuxt-app:/usr/src/nuxt-app
     tty: true
