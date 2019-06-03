@@ -53,7 +53,7 @@ def do_encode(vid_input, resolution_type):
 	encoding = resolution_type[1] + "x" + resolution_type[2]
 	video_name = vid_input.split('/')[-1].split('.')[0]
 	folder = "video/" + video_name
-	video_path = folder + "/" + resolution
+	video_path = folder
 
 	try :
 		os.mkdir(video_path)
@@ -114,13 +114,10 @@ def put_video_in_folder(video):
 	# compare with dictionary
 	for i in range(0, len(resolution_types)):
 		if resolution_types[i][1] == str(width) and resolution_types[i][2] == str(height):
-			folder_to_create = "video/" + video_name + "/" + resolution_types[i][0]
-			os.mkdir(folder_to_create)
+			folder = "video/" + video_name
 
 			# move video the right directory. eg: video/18/1080p/1080p.mp4
-			os.rename(video, folder_to_create + "/" + resolution_types[i][0] + ".mp4")
-
-	# move to the right folder
+			os.rename(video, folder + "/" + resolution_types[i][0] + ".mp4")
 
 if __name__ == '__main__':
 	try :
