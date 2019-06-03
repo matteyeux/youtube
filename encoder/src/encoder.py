@@ -32,21 +32,19 @@ def is_mp4(video):
 def convert_to_mp4(vid_input):
 	FNULL = open(os.devnull, 'w')
 
-	# should replace extension to mp4
+	# replace extension to mp4
 	vid_output = vid_input
 	vid_output = vid_output.replace(vid_output.split('.')[-1], "mp4")
+	print("[i] converting %s to %s" % (vid_input, vid_output))
 
 	# create ffmpeg subprocess and wait for it
-	# before doing anything else
 	try :
 		p = subprocess.Popen(['ffmpeg', '-i', vid_input, vid_output, '-y'], stdout=FNULL, stderr=FNULL)
 		p.wait()
 	except:
-		print("ffmpeg failed")
+		print("[e] ffmpeg failed")
 		sys.exit(1)
 
-	# remove video in uploads
-	os.remove(vid_input)
 	return vid_output
 
 # encode video to a lower resolution
@@ -73,7 +71,7 @@ def do_encode(vid_input, resolution_type):
 		p = subprocess.Popen(['ffmpeg', '-i', vid_input, '-s', encoding, vid_output, '-n'], stdout=FNULL, stderr=FNULL)
 		p.wait()
 	except:
-		print("error")
+		print("[e] error")
 		sys.exit(1)
 
 # get max resolution of video
@@ -102,14 +100,27 @@ def set_resolution(video):
 	for i in range(len(resolution_types)) :
 		resolution = int(resolution_types[i][1]) * int(resolution_types[i][2])
 		if resolution < video_res:
-			print("encoding in %s" % resolution_types[i][0])
+			print("[x] encoding in %s" % resolution_types[i][0])
 			do_encode(video, resolution_types[i])
 
+# aim of this function is to move default video
+# to it's new folder
+# uploads/18.mp4 -> video/18/1080p/1080p.mp4
 def put_video_in_folder(video):
 	# get width and height of video
+	height, width = get_video_res(video)
+	video_name = video.split('/')[-1].split('.')[0]
+
 	# compare with dictionary
+	for i in range(0, len(resolution_types)):
+		if resolution_types[i][1] == str(width) and resolution_types[i][2] == str(height):
+			folder_to_create = "video/" + video_name + "/" + resolution_types[i][0]
+			os.mkdir(folder_to_create)
+
+			# move video the right directory. eg: video/18/1080p/1080p.mp4
+			os.rename(video, folder_to_create + "/" + resolution_types[i][0] + ".mp4")
+
 	# move to the right folder
-	return True
 
 if __name__ == '__main__':
 	try :
@@ -121,13 +132,18 @@ if __name__ == '__main__':
 		video_path = "./uploads/" + video
 		new_dir = "video/" + video.split('.')[0]
 
-		os.mkdir(new_dir)
+		try:
+			print("[i] creating dir %s" % new_dir)
+			os.mkdir(new_dir)
+		except:
+			pass
 
 		if is_video(video_path) is False:
-			print("file is not video")
+			print("[e] file is not video")
 			sys.exit(1)
 
 		if is_mp4(video_path) is False:
 			video = convert_to_mp4(video_path)
 
 		set_resolution(video_path)
+		put_video_in_folder(video_path)
