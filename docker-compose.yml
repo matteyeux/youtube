@@ -3,48 +3,48 @@
 version: '2'
 
 services:
-  db:
-    image: mysql:5.7
-    restart: always
-    container_name: yt_db
-    environment:
-      MYSQL_DATABASE: 'youtube'
-      MYSQL_USER: 'youtube'
-      MYSQL_PASSWORD: 'youtube'
-      MYSQL_ROOT_PASSWORD: 'youtube'
-    command: --init-file /data/youtube_v2.sql
-    volumes:
-      - ./resources/:/data
-    networks:
-      youtube_net:
-        ipv4_address: "172.16.0.11"
-  api:
-    build: api
-    depends_on: 
-      - db
-    container_name: yt_api
-    volumes:
-      - ./api/src:/api
-    networks:
-      youtube_net:
-        ipv4_address: "172.16.0.10"
-  vue:
-    build: front
-    depends_on: 
-      - api
-    container_name: yt_front
-    ports:
-      - "80:3000"
-    expose:
-      - '3000'
-    volumes:
-      - ./front/nuxt-app:/usr/src/nuxt-app
-    networks:
-      youtube_net:
-        ipv4_address: "172.16.0.20"
+    db:
+        image: mysql:5.7
+        restart: always
+        container_name: yt_db
+        environment:
+            MYSQL_DATABASE: 'youtube'
+            MYSQL_USER: 'youtube'
+            MYSQL_PASSWORD: 'youtube'
+            MYSQL_ROOT_PASSWORD: 'youtube'
+        command: --init-file /data/youtube_v2.sql
+        volumes:
+            - ./resources/:/data
+        networks:
+            youtube_net:
+                ipv4_address: "172.16.0.11"
+    api:
+        build: api
+        depends_on: 
+            - db
+        container_name: yt_api
+        volumes:
+            - ./api/src:/api
+        networks:
+            youtube_net:
+                ipv4_address: "172.16.0.10"
+    vue:
+        build: front
+        depends_on: 
+            - api
+        container_name: yt_front
+        ports:
+            - "80:3000"
+        expose:
+            - '3000'
+        volumes:
+            - ./front/nuxt-app:/usr/src/nuxt-app
+        networks:
+            youtube_net:
+                ipv4_address: "172.16.0.20"
 networks:
-  youtube_net:
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.16.0.0/24
+    youtube_net:
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.16.0.0/24
