@@ -9,6 +9,9 @@
         <a href="/users/">Users</a>
       </li>
       <li>
+        <nuxt-link to="users">Bad users</nuxt-link>
+      </li>
+      <li>
         <a href="/about">About</a>
       </li>
     </ul>
