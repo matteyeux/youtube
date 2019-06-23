@@ -66,8 +66,6 @@ class UserModel(db.Model):
 
 	@classmethod
 	def get_all_users(cls, pseudo):
-		if pseudo is None:
-			pseudo = ""
 		return cls.query.filter(UserModel.pseudo.like('%'+pseudo+'%')).all()
 
 	@staticmethod
@@ -113,23 +111,18 @@ class VideoModel(db.Model):
 	def return_all(cls):
 		def to_json(x):
 			return {
-				'message': "OK",
-				'data': {
-					"id" : x.id,
-					"source" : x.source,
-					"created_at" : str(x.created_at),
-					"view" : x.view,
-					"enabled" : x.enabled,
-					"user" : x.user_id,
-					"format" : {
-						"1080" : app.config['VIDEO_URL'] + x.name
-					}
+				"id" : x.id,
+				"source" : x.source,
+				"created_at" : str(x.created_at),
+				"view" : x.view,
+				"enabled" : x.enabled,
+				"user" : x.user_id,
+				"format" : {
+					"1080" : app.config['VIDEO_URL'] + x.name
 				}
 			}
-		return {
-			'message': 'OK',
-			'data': list(map(lambda x: to_json(x), VideoModel.query.all()))
-		}
+		return list(map(lambda x: to_json(x), VideoModel.query.all()))
+
 
 	@classmethod
 	def get_video_by_id(cls, id):

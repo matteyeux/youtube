@@ -1,6 +1,6 @@
 from flask_restful import Resource, reqparse, request
 from models import UserModel, TokenModel, RevokedTokenModel, CommentModel
-from resources import is_authentified, actual_user_id, is_user_connected
+from resources import is_authentified, actual_user_id, is_user_connected, paging, number_page
 import datetime
 
 parser = reqparse.RequestParser()
@@ -13,7 +13,6 @@ class Comment(Resource):
 	def post(self, id):
 		data = parser.parse_args()
 		user_id = actual_user_id()
-		# video_exist = get_videos_by_id(id)
 
 		if is_authentified()!=True:
 			return {"message": "Unauthorized"}, 401
@@ -36,26 +35,48 @@ class Comment(Resource):
 			except:
 				return {
 					'message': 'Bad Request',
-					'code': '1001 => User {} already exists'. format(data['username']),
-					'data': {
-						'username': current_user.username,
-						'pseudo': current_user.pseudo,
-						'email': current_user.email
-						}
+					'code': '3001 => Video doesn\'t exist',
+					'data': data['body']
 					}, 400
 
 # List all users
 class GetAllComments(Resource):
 	def get(self, video_id):
+		parser = reqparse.RequestParser()
+		parser.add_argument('page', help='This field cannot be blank', required=False)
+		parser.add_argument('perPage', help='This field cannot be blank', required=False)
+		json = parser.parse_args()
+
 		result = CommentModel.get_all_comments_by_video_id(video_id)
+		page = json['page']
+		perPage = json['perPage']
 		datum = []
+
+		if page is None or perPage is None:
+			return {
+					'message': 'Bad Request',
+					'code': '3001 => One of your argument is "null"',
+					'data': json
+				}, 400		
+
 		for data in result:
 			datum.append({
 				'id': data.id,
 				'body': data.body,
 				'user_id': data.user_id,
 			})
-		if datum:
-			return { 'message': 'OK', 'data': datum }
+
+		results = paging(datum, int(page), int(perPage))
+		total_page = number_page(datum, int(perPage))
+
+		if results:
+			return { 
+				'message': 'OK', 
+				'data': results,
+				'pager': {
+					'current': page,
+					'total': total_page
+					}
+				}, 200
 		else:
 			return { 'message': 'Not found'}, 404
