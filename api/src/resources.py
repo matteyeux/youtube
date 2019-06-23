@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(0, r'/home/boris/Documents/ETNA/Run/API3/mailer')
+import mailer
 from flask_restful import Resource, reqparse, request
 from models import UserModel
 from models import UserModel, TokenModel, RevokedTokenModel
@@ -21,24 +24,32 @@ class UserCreate(Resource):
 				'message': 'Bad Request',
 				'code': '1001 => User {} already exists'. format(data['username']),
 				'data': {
-					'username': data["username"],
-					'pseudo': data["pseudo"],
-					'email': data["email"]
+					'username': data['username'],
+					'pseudo': data['pseudo'],
+					'email': data['email']
 					}
 				}, 400
 
-		if re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', data["email"]) is None:
-			return {"message": "Bad Request", 'Code': "1002 => format email invalide"}, 400
+		if re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', data['email']) is None:
+			return {
+				'message': 'Bad Request', 
+				'Code': '1002 => format email invalide',
+				'data': {
+					'username': data['username'],
+					'pseudo': data['pseudo'],
+					'email': data['email']
+					}				
+				}, 400
 
-		check_by_email = UserModel.get_user_by_email(data["email"])
+		check_by_email = UserModel.get_user_by_email(data['email'])
 		if check_by_email:
 			return {
 				'message': 'Bad Request',
 				'code': '1002 => email {} already exists'. format(data['email']),
 				'data': {
-					'username': data["username"],
-					'pseudo': data["pseudo"],
-					'email': data["email"]
+					'username': data['username'],
+					'pseudo': data['pseudo'],
+					'email': data['email']
 					}
 				}, 400
 
@@ -54,6 +65,7 @@ class UserCreate(Resource):
 			current_user = UserModel.get_user_by_username(data['username'])
 			access_token = create_access_token(identity = data['username'])
 			refresh_token = create_refresh_token(identity = data['username'])
+			mailer.send_mail(0, current_user.email)
 			return {
 				'message': 'OK',
 				'data': {
@@ -149,7 +161,6 @@ def insert_token_bdd(token, user_id):
 	except:
 		return {}, 500
 
-
 def is_authentified():
 	if TokenModel.get_token_bdd(token=request.headers.get('Authorization')):
 		return True
@@ -168,15 +179,20 @@ def is_user_connected(id):
 
 def paging(results, page, perPage):
 	first_id_result = (page - 1) * perPage
-	last_id_result = (page * perPage) - 1
+	last_id_result = (page * perPage)
 
-	if last_id_result > count(results):
-		last_id_result = count(results)
+	if last_id_result > len(results):
+		last_id_result = len(results)
 
 	new_results = []
 	i = first_id_result
-	while i <= last_id_result:
+	while i < last_id_result:
 		new_results.append(results[i])
-		i = i + 1
+		if i < last_id_result:
+			i = i + 1
 
 	return new_results
+
+def number_page(results, perPage):
+	total_page = int(len(results) / perPage) + (len(results) % perPage > 0)
+	return total_page

@@ -3,7 +3,7 @@ from flask_restful import Resource, reqparse, request
 from models import UserModel, RevokedTokenModel, VideoModel
 from werkzeug.utils import secure_filename
 from youtube import app
-from resources import is_authentified
+from resources import is_authentified, actual_user_id, is_user_connected, paging, number_page
 from user import is_user_connected
 import datetime, os
 
@@ -56,8 +56,36 @@ class VideoCreate(Resource):
 
 class AllVideos(Resource):
 	def get(self):
-		return VideoModel.return_all()
+		parser = reqparse.RequestParser()
+		parser.add_argument('page', help='This field cannot be blank', required=False)
+		parser.add_argument('perPage', help='This field cannot be blank', required=False)
+		json = parser.parse_args()
 
+		datum = VideoModel.return_all()
+		page = json['page']
+		perPage = json['perPage']	
+
+		if page is None or perPage is None:
+			return {
+					'message': 'Bad Request',
+					'code': '2004 => One of your argument is "null"',
+					'data': json
+				}, 400	
+
+		results = paging(datum, int(page), int(perPage))
+		total_page = number_page(datum, int(perPage))
+
+		if results:
+			return { 
+				'message': 'OK', 
+				'data': results,
+				'pager': {
+					'current': page,
+					'total': total_page
+					}
+				}, 200
+		else:
+			return { 'message': 'Not found'}, 404
 
 class VideoDelete(Resource):
 	def delete(self, id):
