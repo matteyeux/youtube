@@ -66,6 +66,8 @@ class UserModel(db.Model):
 
 	@classmethod
 	def get_all_users(cls, pseudo):
+		if pseudo is None:
+			pseudo = ""
 		return cls.query.filter(UserModel.pseudo.like('%'+pseudo+'%')).all()
 
 	@staticmethod

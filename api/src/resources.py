@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0, r'/home/boris/Documents/ETNA/Run/API3/mailer')
+sys.path.insert(0, r'../../mailer')
 import mailer
 from flask_restful import Resource, reqparse, request
 from models import UserModel
@@ -177,7 +177,7 @@ def is_user_connected(id):
 	else:
 		return False
 
-def paging(results, page, perPage):
+def paging(results, page=1, perPage=100):
 	first_id_result = (page - 1) * perPage
 	last_id_result = (page * perPage)
 
@@ -193,6 +193,6 @@ def paging(results, page, perPage):
 
 	return new_results
 
-def number_page(results, perPage):
+def number_page(results, perPage=100):
 	total_page = int(len(results) / perPage) + (len(results) % perPage > 0)
 	return total_page
