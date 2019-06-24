@@ -5,9 +5,11 @@ from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 import os
+from flask_cors import CORS
 
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"*": {"origins": "*"}})
 api = Api(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://youtube:youtube@localhost/youtube'
