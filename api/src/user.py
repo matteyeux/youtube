@@ -1,5 +1,6 @@
 import sys
-sys.path.insert(0, r'../../mailer')
+# sys.path.insert(0, r'../../mailer')
+sys.path.insert(0, r'/home/boris/Documents/ETNA/Run/API3/mailer')
 import mailer
 from flask_restful import Resource, reqparse
 from models import UserModel, TokenModel
@@ -147,8 +148,8 @@ class GetAllUsers(Resource):
 			page = 1
 		if perPage is None:
 			perPage = 100
-		results = paging(datum, page, perPage)
-		total_page = number_page(datum, perPage)
+		results = paging(datum, int(page), int(perPage))
+		total_page = number_page(datum, int(perPage))	
 
 		if results:
 			return { 
