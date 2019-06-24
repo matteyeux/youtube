@@ -63,7 +63,12 @@ class AllVideos(Resource):
 
 		datum = VideoModel.return_all()
 		page = json['page']
-		perPage = json['perPage']	
+		perPage = json['perPage']
+
+		if page is None:
+			page = 1
+		if perPage is None:
+			perPage = 100
 
 		if page is None or perPage is None:
 			return {

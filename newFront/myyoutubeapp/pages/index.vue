@@ -3,6 +3,7 @@
     <div>
       <div class="row">
         <nuxt-link to="/getusers" class="button--grey">Liste des utilisateurs</nuxt-link>
+        <nuxt-link to="/getvideos" class="button--grey">Liste des vidéos</nuxt-link>
       </div>
       <logo />
       <h1 class="title">
