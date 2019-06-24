@@ -6,7 +6,6 @@
         <ul>
           <li v-for="user in users.data" class="item">
           	<p>Pseudo : {{ user.pseudo }} (date de création : {{ user.created_at }})</p>
-            <!-- <nuxt-link :to="'/user/' + user.id">{{ user.pseudo }}</nuxt-link> -->
           </li>
         </ul>
       </div>

@@ -92,6 +92,27 @@ class AllVideos(Resource):
 		else:
 			return { 'message': 'Not found'}, 404
 
+class Video(Resource):
+	def get(self, id):
+		# parser = reqparse.RequestParser()
+		# json = parser.parse_args()
+
+		result = VideoModel.get_video_by_id(id)
+
+		if result:
+			data = {
+				'id': result.id,
+				'name': result.name,
+				'source': result.source,
+				'created_at': str(result.created_at),
+				'view': result.view,
+				'enabled': result.enabled,
+				'user': result.id
+			}
+			return {'message': 'OK', 'data': data}
+		else:
+			return {'message': 'Not found'}, 404
+
 class VideoDelete(Resource):
 	def delete(self, id):
 		if is_authentified()!=True:
