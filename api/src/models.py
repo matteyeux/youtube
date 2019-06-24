@@ -113,6 +113,7 @@ class VideoModel(db.Model):
 	def return_all(cls):
 		def to_json(x):
 			return {
+				"name" : x.name,
 				"id" : x.id,
 				"source" : x.source,
 				"created_at" : str(x.created_at),

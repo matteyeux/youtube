@@ -1,11 +1,11 @@
 <template>
   <article>
     <section>
-      <h1>GET API Result List Users</h1>
+      <h1>GET API Result List Vidéos</h1>
       <div>
         <ul>
           <li v-for="video in videos.data" class="item">
-          	<p>{{ video.format }}</p>
+          	<p>{{ video.name }}</p>
           </li>
         </ul>
       </div>
