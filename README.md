@@ -35,3 +35,4 @@ Install Python modules : `pip3 install -r requirements.txt`
 ### Followed tutorial
 
 This one uses MySQL instead of SQLite3 https://www.roytuts.com/python-rest-api-crud-example-using-flask-and-mysql/
+
