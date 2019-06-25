@@ -19,12 +19,15 @@ resolution_types = [
 
 def is_video(imported_file):
 	with magic.Magic(flags=magic.MAGIC_MIME_TYPE) as m:
+		print("here")
+		print(m.id_filename(imported_file).split('/')[0])
 		if m.id_filename(imported_file).split('/')[0] == "video" :
 			return True
 	return False
 
 def is_mp4(video):
 	with magic.Magic(flags=magic.MAGIC_MIME_TYPE) as m:
+		print(m.id_filename(video).split('/')[1])
 		if m.id_filename(video).split('/')[1] == "mp4" :
 			return True
 	return False
@@ -60,7 +63,7 @@ def do_encode(vid_input, resolution_type):
 	except:
 		pass
 
-	vid_output = video_path + "/" + resolution + ".mp4"
+	vid_output = "../../new-front/nuxt-app/assets/videos/" + resolution + ".mp4"
 
 	# don't print anything to stdout and sterr
 	FNULL = open(os.devnull, 'w')
@@ -79,13 +82,11 @@ def get_video_res(video):
 	try:
 		probe = ffmpeg.probe(video)
 	except ffmpeg.Error as e:
-		print(e.stderr, file=sys.stderr)
 		sys.exit(1)
 
 	video_stream = next((stream for stream in probe['streams'] if stream['codec_type'] == 'video'), None)
  
 	if video_stream is None:
-		print('No video stream found', file=sys.stderr)
 		sys.exit(1)
 
 	width = int(video_stream['width'])
@@ -94,6 +95,7 @@ def get_video_res(video):
 
 def set_resolution(video):
 	width, height = get_video_res(video)
+	print(width, height)
 	video_res = width * height
 
 	# parse dictionary to get max resolution to use
@@ -125,22 +127,23 @@ if __name__ == '__main__':
 	except :
 		pass
 
-	for video in os.listdir("./uploads"):
-		video_path = "./uploads/" + video
-		new_dir = "video/" + video.split('.')[0]
+	for video in os.listdir("../../new-front/nuxt-app/assets/uploads/"):
+		if video != ".keep":
+			video_path = "../../new-front/nuxt-app/assets/uploads/" + video
+			new_dir = "../../new-front/nuxt-app/assets/videos/" + video.split('.')[0]
 
-		try:
-			print("[i] creating dir %s" % new_dir)
-			os.mkdir(new_dir)
-		except:
-			pass
+			try:
+				print("[i] creating dir %s" % new_dir)
+				os.mkdir(new_dir)
+			except:
+				pass
 
-		if is_video(video_path) is False:
-			print("[e] file is not video")
-			sys.exit(1)
+			if is_video(video_path) is False:
+				print("[e] file is not video")
+				sys.exit(1)
 
-		if is_mp4(video_path) is False:
-			video = convert_to_mp4(video_path)
+			if is_mp4(video_path) is False:
+				video = convert_to_mp4(video_path)
 
-		set_resolution(video_path)
-		put_video_in_folder(video_path)
+			set_resolution(video_path)
+			put_video_in_folder(video_path)
