@@ -70,12 +70,11 @@ class AllVideos(Resource):
 		if perPage is None:
 			perPage = 100
 
-		if page is None or perPage is None:
-			return {
-					'message': 'Bad Request',
-					'code': '2004 => One of your argument is "null"',
-					'data': json
-				}, 400	
+		return {
+				'message': 'Bad Request',
+				'code': '2004 => One of your argument is "null"',
+				'data': json
+			}, 400	
 
 		results = paging(datum, int(page), int(perPage))
 		total_page = number_page(datum, int(perPage))
