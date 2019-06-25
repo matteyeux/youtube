@@ -110,7 +110,7 @@ def put_video_in_folder(video):
 			# move video the right directory. eg: video/18/1080p/1080p.mp4
 			os.rename(video, folder + "/" + resolution_types[i][0] + ".mp4")
 
-if __name__ == '__main__':
+def encoder():
 	for video in os.listdir("../../newFront/myyoutubeapp/assets/uploads/"):
 		if video != ".keep":
 			video_path = "../../newFront/myyoutubeapp/assets/uploads/" + video
@@ -131,3 +131,6 @@ if __name__ == '__main__':
 
 			set_resolution(video_path)
 			put_video_in_folder(video_path)
+
+if __name__ == '__main__':
+	encoder()
