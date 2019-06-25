@@ -71,8 +71,6 @@ export default {
   }
 };
 
-
-
 // export default {
 //   async asyncData (params) {
 //     params = {

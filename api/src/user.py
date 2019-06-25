@@ -148,7 +148,7 @@ class GetAllUsers(Resource):
 		if perPage is None:
 			perPage = 100
 		results = paging(datum, int(page), int(perPage))
-		total_page = number_page(datum, int(perPage))	
+		total_page = number_page(datum, int(perPage))
 
 		if results:
 			return { 

@@ -38,7 +38,7 @@ class UserCreate(Resource):
 					'username': data['username'],
 					'pseudo': data['pseudo'],
 					'email': data['email']
-					}				
+					}
 				}, 400
 
 		check_by_email = UserModel.get_user_by_email(data['email'])
