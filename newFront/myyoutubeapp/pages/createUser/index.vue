@@ -9,7 +9,7 @@
       <h2 class="subtitle">Registration</h2>
       <div>
         <div class="col-md-4">
-          <form id="createUser">
+          <form @submit="formSubmit">
           <div class="form-group">
             <label for="InputUsername">Username</label>
             <input type="text" v-model="username" class="form-control" id="InputUsername" placeholder="Enter your username" required>
@@ -41,23 +41,51 @@
 <script>
 import axios from 'axios'
 
-// getElementById('createUser').addEventListener('submit', createUserPostRequest);
-
-
-
 export default {
-  async asyncData (params) {
-    params = {
-      "username": "majdo",
-      "pseudo": "Alex",
-      "email": "majdo_o@etna-alternance.net",
-      "password": "majdo"
+  data() {
+    return {
+      username: '',
+      pseudo: '',
+      email: '',
+      email: '',
+      output: ''
+    };
+  },
+  methods: {
+    formSubmit(e) {
+      e.preventDefault();
+      let currentObj = this;
+      this.axios.post('http://localhost:5000/users', {
+        username: this.username,
+        pseudo: this.pseudo,
+        email: this.email,
+        password: this.password
+      })
+      .then(function (response) {
+        currentObj.output = response.data;
+      })
+      .catch(function (error) {
+        currentObj.output = error;
+      });
     }
-    // let res = await axios.post('http://localhost:5000/users', params)
-
-    // return {user:res.data}
   }
 };
+
+
+
+// export default {
+//   async asyncData (params) {
+//     params = {
+//       "username": this.username,
+//       "pseudo": this.pseudo,
+//       "email": this.email,
+//       "password": this.password
+//     }
+//     let res = await axios.post('http://localhost:5000/users', params)
+
+//     return {user:res.data}
+//   }
+// };
 </script>
 
 <style>
