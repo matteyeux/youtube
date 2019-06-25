@@ -19,15 +19,12 @@ resolution_types = [
 
 def is_video(imported_file):
 	with magic.Magic(flags=magic.MAGIC_MIME_TYPE) as m:
-		print("here")
-		print(m.id_filename(imported_file).split('/')[0])
 		if m.id_filename(imported_file).split('/')[0] == "video" :
 			return True
 	return False
 
 def is_mp4(video):
 	with magic.Magic(flags=magic.MAGIC_MIME_TYPE) as m:
-		print(m.id_filename(video).split('/')[1])
 		if m.id_filename(video).split('/')[1] == "mp4" :
 			return True
 	return False
@@ -55,15 +52,8 @@ def do_encode(vid_input, resolution_type):
 	resolution = resolution_type[0]
 	encoding = resolution_type[1] + "x" + resolution_type[2]
 	video_name = vid_input.split('/')[-1].split('.')[0]
-	folder = "video/" + video_name
-	video_path = folder
 
-	try :
-		os.mkdir(video_path)
-	except:
-		pass
-
-	vid_output = "../../new-front/nuxt-app/assets/videos/" + resolution + ".mp4"
+	vid_output = "../../newFront/myyoutubeapp/assets/videos/" + video_name + "/" + resolution + ".mp4"
 
 	# don't print anything to stdout and sterr
 	FNULL = open(os.devnull, 'w')
@@ -95,7 +85,6 @@ def get_video_res(video):
 
 def set_resolution(video):
 	width, height = get_video_res(video)
-	print(width, height)
 	video_res = width * height
 
 	# parse dictionary to get max resolution to use
@@ -122,15 +111,10 @@ def put_video_in_folder(video):
 			os.rename(video, folder + "/" + resolution_types[i][0] + ".mp4")
 
 if __name__ == '__main__':
-	try :
-		os.mkdir("video")
-	except :
-		pass
-
-	for video in os.listdir("../../new-front/nuxt-app/assets/uploads/"):
+	for video in os.listdir("../../newFront/myyoutubeapp/assets/uploads/"):
 		if video != ".keep":
-			video_path = "../../new-front/nuxt-app/assets/uploads/" + video
-			new_dir = "../../new-front/nuxt-app/assets/videos/" + video.split('.')[0]
+			video_path = "../../newFront/myyoutubeapp/assets/uploads/" + video
+			new_dir = "../../newFront/myyoutubeapp/assets/videos/" + video.split('.')[0]
 
 			try:
 				print("[i] creating dir %s" % new_dir)
