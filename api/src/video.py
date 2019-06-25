@@ -1,3 +1,4 @@
+import sys
 from pymediainfo import MediaInfo
 from flask_restful import Resource, reqparse, request
 from models import UserModel, RevokedTokenModel, VideoModel
@@ -6,6 +7,9 @@ from youtube import app
 from resources import is_authentified, actual_user_id, is_user_connected, paging, number_page
 from user import is_user_connected
 import datetime, os
+sys.path.insert(0, "../../encoder/src")
+
+import encoder
 
 parser = reqparse.RequestParser()
 parser.add_argument('name', help = 'This field cannot be blank', required = True)
@@ -32,6 +36,7 @@ class VideoCreate(Resource):
 
 			new_video.save_to_db()
 
+			# fork this here -> encoder.encoder()
 			return {
 				'message': 'OK',
 				'data': {

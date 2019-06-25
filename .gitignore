@@ -5,3 +5,4 @@ __pycache__
 front/nuxt-app/node_modules/.cache/*
 *.ini
 newFront/myyoutubeapp/assets/videos/*
+*.mp4

@@ -132,5 +132,7 @@ def encoder():
 			set_resolution(video_path)
 			put_video_in_folder(video_path)
 
+			# send mail
+
 if __name__ == '__main__':
 	encoder()
