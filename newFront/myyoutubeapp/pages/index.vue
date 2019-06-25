@@ -2,6 +2,9 @@
   <div class="container">
     <div>
       <div class="row">
+        <nuxt-link to="/createUser" class="button--grey">S'enregistrer</nuxt-link>
+      </div>
+      <div class="row">
         <nuxt-link to="/users" class="button--grey">Liste des utilisateurs</nuxt-link>
         <nuxt-link to="/videos" class="button--grey">Liste des vidéos</nuxt-link>
       </div>
