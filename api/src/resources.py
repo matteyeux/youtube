@@ -1,6 +1,5 @@
 import sys
-# sys.path.insert(0, r'../../mailer')
-sys.path.insert(0, r'/home/boris/Documents/ETNA/Run/API3/mailer')
+sys.path.insert(0, r'../../mailer')
 import mailer
 from flask_restful import Resource, reqparse, request
 from models import UserModel
