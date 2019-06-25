@@ -7,10 +7,10 @@
       </div>
       <logo />
       <h1 class="title">
-        myyoutubeapp
+        My Youtube
       </h1>
       <h2 class="subtitle">
-        project my youtube to etna
+        Broadcast together
       </h2>
       <div class="links">
         <a href="https://nuxtjs.org/" target="_blank" class="button--green">Documentation</a>
@@ -27,7 +27,7 @@ export default {
   components: {
     Logo
   }
-}
+};
 </script>
 
 <style>
@@ -60,5 +60,17 @@ export default {
 
 .links {
   padding-top: 15px;
+}
+
+.row {
+  margin: 25px auto;
+}
+
+.page_container {
+  margin: 0px 50px;
+}
+
+.nav {
+  margin: 25px 0px;
 }
 </style>
