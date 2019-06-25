@@ -11,7 +11,7 @@
           <li v-for="video in videos.data" class="item">
             <div class="row">
               <nuxt-link v-bind:to="'/videos/' + video.id" style="margin-top: 50px">{{ video.id }} - {{ video.name}}</nuxt-link>
-              <video :src="require('~/assets/video/SampleVideo_1280x720_30mb.mp4')" width="160" height="120" style="margin-left: 20px">
+              <video :src="require('~/assets/videos/SampleVideo_1280x720_30mb.mp4')" width="160" height="120" style="margin-left: 20px">
               </video>
             </div>
           </li>

@@ -4,4 +4,4 @@ __pycache__
 .idea
 front/nuxt-app/node_modules/.cache/*
 *.ini
-newFront/myyoutubeapp/assets/video/*
+newFront/myyoutubeapp/assets/videos/*

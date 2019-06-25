@@ -16,7 +16,7 @@
         </ul>
         <hr>
         <video width="50%" controls style="margin: 25px">
-          <source :src="require('~/assets/video/SampleVideo_1280x720_30mb.mp4')" type="video/mp4">
+          <source :src="require('~/assets/videos/SampleVideo_1280x720_30mb.mp4')" type="video/mp4">
         </video>
       </div>
     </div>
