@@ -4,6 +4,14 @@
   </div>
 </template>
 
+<script>
+export default {
+  data() {
+    this.$store.commit('updateToken', this.$cookies.get('token'))
+  }
+}
+</script>
+
 <style>
 html {
   font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',

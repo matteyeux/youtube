@@ -6,6 +6,7 @@
         <nuxt-link to="/videos" class="button--grey">Liste des vidéos</nuxt-link>
       </div>
       <h2 class="subtitle">List Users</h2>
+      {{ $store.state.token }}
       <div>
         <ul>
           <li v-for="user in users.data" class="item">
