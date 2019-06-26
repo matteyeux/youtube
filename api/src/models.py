@@ -100,7 +100,7 @@ class VideoModel(db.Model):
 	name = db.Column(db.String(45), nullable = False)
 	duration = db.Column(db.Integer, nullable = True)
 	user_id = db.Column(db.Integer, nullable = False)
-	source = db.Column(db.String(45), nullable = False)
+	source = db.Column(db.String(200), nullable = False)
 	created_at = db.Column(db.Date, nullable = False)
 	view = db.Column(db.Integer, nullable = False)
 	enabled = db.Column(db.Integer, nullable = False)
