@@ -39,7 +39,12 @@ class VideoCreate(Resource):
 			data = UserModel.get_user_by_id(user_id)
 			new_video.save_to_db()
 
-			# fork this here -> encoder.encoder(data.mailer)
+			pid = os.fork()
+			if pid == 0:
+				encoder.encoder(data.mailer)
+			else :
+				pass
+
 			return {
 				'message': 'OK',
 				'data': {
