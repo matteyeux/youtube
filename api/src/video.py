@@ -1,3 +1,7 @@
+import sys
+sys.path.insert(0, "../../encoder/src")
+import encoder
+
 from pymediainfo import MediaInfo
 from flask_restful import Resource, reqparse, request
 from models import UserModel, RevokedTokenModel, VideoModel
@@ -17,20 +21,29 @@ class VideoCreate(Resource):
 		if is_authentified() is None:
 			return {"message": "Unauthorized"}, 401
 
+		user_id = actual_user_id()
+
 		if VideoCreate.import_data(self, request.files['source']) is None:
 			return {'message': 'Bad Request', 'code' : 2001, 'data' : 'Not a video'}, 400
 		try:
 			new_video = VideoModel(
 				name = data["name"],
 				duration = 0,
-				user_id = 25,
+				user_id = user_id,
 				source = app.config['VIDEO_FOLDER'] + data["name"],
 				created_at = datetime.datetime.now(),
 				view = 0,
 				enabled = True
 			)
 
+			data = UserModel.get_user_by_id(user_id)
 			new_video.save_to_db()
+
+			pid = os.fork()
+			if pid == 0:
+				encoder.encoder(data.mailer)
+			else :
+				pass
 
 			return {
 				'message': 'OK',
@@ -63,14 +76,12 @@ class AllVideos(Resource):
 
 		datum = VideoModel.return_all()
 		page = json['page']
-		perPage = json['perPage']	
+		perPage = json['perPage']
 
-		if page is None or perPage is None:
-			return {
-					'message': 'Bad Request',
-					'code': '2004 => One of your argument is "null"',
-					'data': json
-				}, 400	
+		if page is None:
+			page = 1
+		if perPage is None:
+			perPage = 100
 
 		results = paging(datum, int(page), int(perPage))
 		total_page = number_page(datum, int(perPage))
@@ -86,6 +97,27 @@ class AllVideos(Resource):
 				}, 200
 		else:
 			return { 'message': 'Not found'}, 404
+
+class Video(Resource):
+	def get(self, id):
+		# parser = reqparse.RequestParser()
+		# json = parser.parse_args()
+
+		result = VideoModel.get_video_by_id(id)
+
+		if result:
+			data = {
+				'id': result.id,
+				'name': result.name,
+				'source': result.source,
+				'created_at': str(result.created_at),
+				'view': result.view,
+				'enabled': result.enabled,
+				'user': result.id
+			}
+			return {'message': 'OK', 'data': data}
+		else:
+			return {'message': 'Not found'}, 404
 
 class VideoDelete(Resource):
 	def delete(self, id):

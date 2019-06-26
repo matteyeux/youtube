@@ -2,6 +2,10 @@
 # fmpeg -i input.mp4 -s 320x240 output.mp4
 # pip3 install ffmpeg-python
 
+import sys
+sys.path.insert(0, r'../../mailer')
+import mailer
+
 import ffmpeg
 import sys
 import subprocess
@@ -52,15 +56,8 @@ def do_encode(vid_input, resolution_type):
 	resolution = resolution_type[0]
 	encoding = resolution_type[1] + "x" + resolution_type[2]
 	video_name = vid_input.split('/')[-1].split('.')[0]
-	folder = "video/" + video_name
-	video_path = folder
 
-	try :
-		os.mkdir(video_path)
-	except:
-		pass
-
-	vid_output = video_path + "/" + resolution + ".mp4"
+	vid_output = "../../newFront/myyoutubeapp/assets/videos/" + video_name + "/" + resolution + ".mp4"
 
 	# don't print anything to stdout and sterr
 	FNULL = open(os.devnull, 'w')
@@ -79,13 +76,11 @@ def get_video_res(video):
 	try:
 		probe = ffmpeg.probe(video)
 	except ffmpeg.Error as e:
-		print(e.stderr, file=sys.stderr)
 		sys.exit(1)
 
 	video_stream = next((stream for stream in probe['streams'] if stream['codec_type'] == 'video'), None)
  
 	if video_stream is None:
-		print('No video stream found', file=sys.stderr)
 		sys.exit(1)
 
 	width = int(video_stream['width'])
@@ -119,28 +114,29 @@ def put_video_in_folder(video):
 			# move video the right directory. eg: video/18/1080p/1080p.mp4
 			os.rename(video, folder + "/" + resolution_types[i][0] + ".mp4")
 
+def encoder(user_mail):
+	for video in os.listdir("../../newFront/myyoutubeapp/assets/uploads/"):
+		if video != ".keep":
+			video_path = "../../newFront/myyoutubeapp/assets/uploads/" + video
+			new_dir = "../../newFront/myyoutubeapp/assets/videos/" + video.split('.')[0]
+
+			try:
+				print("[i] creating dir %s" % new_dir)
+				os.mkdir(new_dir)
+			except:
+				pass
+
+			if is_video(video_path) is False:
+				print("[e] file is not video")
+				sys.exit(1)
+
+			if is_mp4(video_path) is False:
+				video = convert_to_mp4(video_path)
+
+			set_resolution(video_path)
+			put_video_in_folder(video_path)
+
+			mailer.send_mail(2, user_mail);
+
 if __name__ == '__main__':
-	try :
-		os.mkdir("video")
-	except :
-		pass
-
-	for video in os.listdir("./uploads"):
-		video_path = "./uploads/" + video
-		new_dir = "video/" + video.split('.')[0]
-
-		try:
-			print("[i] creating dir %s" % new_dir)
-			os.mkdir(new_dir)
-		except:
-			pass
-
-		if is_video(video_path) is False:
-			print("[e] file is not video")
-			sys.exit(1)
-
-		if is_mp4(video_path) is False:
-			video = convert_to_mp4(video_path)
-
-		set_resolution(video_path)
-		put_video_in_folder(video_path)
+	encoder()

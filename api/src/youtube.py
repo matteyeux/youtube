@@ -5,15 +5,17 @@ from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 import os
+from flask_cors import CORS
 
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"*": {"origins": "*"}})
 api = Api(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://youtube:youtube@localhost/youtube'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.urandom(24)
-app.config['VIDEO_FOLDER'] = "videos"
+app.config['VIDEO_FOLDER'] = "../../newFront/myyoutubeapp/assets/uploads"
 app.config['VIDEO_URL'] = "http://127.0.0.1:5000/videos" # not used for the moment
 
 db = SQLAlchemy(app)
@@ -54,6 +56,7 @@ api.add_resource(resources.TokenRefresh, '/token/refresh')
 api.add_resource(user.GetAllUsers, '/users')
 api.add_resource(user.User, '/user/<int:id>')
 api.add_resource(video.AllVideos, '/videos')
+api.add_resource(video.Video, '/video/<int:id>')
 api.add_resource(video.VideoCreate, '/video')
 api.add_resource(video.VideoDelete, '/video/<int:id>')
 api.add_resource(comment.Comment, '/video/<int:id>/comment')
