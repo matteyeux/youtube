@@ -1,6 +1,8 @@
 import sys
 sys.path.insert(0, "../../encoder/src")
+sys.path.insert(0, "../../search_engine")
 import encoder
+import algolia
 
 from pymediainfo import MediaInfo
 from flask_restful import Resource, reqparse, request
@@ -44,6 +46,8 @@ class VideoCreate(Resource):
 				encoder.encoder(data.mailer)
 			else :
 				pass
+
+			algolia.send_data_to_algolia()
 
 			return {
 				'message': 'OK',
