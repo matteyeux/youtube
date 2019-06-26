@@ -1,4 +1,7 @@
 import sys
+sys.path.insert(0, "../../encoder/src")
+import encoder
+
 from pymediainfo import MediaInfo
 from flask_restful import Resource, reqparse, request
 from models import UserModel, RevokedTokenModel, VideoModel
@@ -7,9 +10,6 @@ from youtube import app
 from resources import is_authentified, actual_user_id, is_user_connected, paging, number_page
 from user import is_user_connected
 import datetime, os
-sys.path.insert(0, "../../encoder/src")
-
-import encoder
 
 parser = reqparse.RequestParser()
 parser.add_argument('name', help = 'This field cannot be blank', required = True)
@@ -21,22 +21,25 @@ class VideoCreate(Resource):
 		if is_authentified() is None:
 			return {"message": "Unauthorized"}, 401
 
+		user_id = actual_user_id()
+
 		if VideoCreate.import_data(self, request.files['source']) is None:
 			return {'message': 'Bad Request', 'code' : 2001, 'data' : 'Not a video'}, 400
 		try:
 			new_video = VideoModel(
 				name = data["name"],
 				duration = 0,
-				user_id = 25,
+				user_id = user_id,
 				source = app.config['VIDEO_FOLDER'] + data["name"],
 				created_at = datetime.datetime.now(),
 				view = 0,
 				enabled = True
 			)
 
+			data = UserModel.get_user_by_id(user_id)
 			new_video.save_to_db()
 
-			# fork this here -> encoder.encoder()
+			# fork this here -> encoder.encoder(data.mailer)
 			return {
 				'message': 'OK',
 				'data': {

@@ -2,6 +2,10 @@
 # fmpeg -i input.mp4 -s 320x240 output.mp4
 # pip3 install ffmpeg-python
 
+import sys
+sys.path.insert(0, r'../../mailer')
+import mailer
+
 import ffmpeg
 import sys
 import subprocess
@@ -110,7 +114,7 @@ def put_video_in_folder(video):
 			# move video the right directory. eg: video/18/1080p/1080p.mp4
 			os.rename(video, folder + "/" + resolution_types[i][0] + ".mp4")
 
-def encoder():
+def encoder(user_mail):
 	for video in os.listdir("../../newFront/myyoutubeapp/assets/uploads/"):
 		if video != ".keep":
 			video_path = "../../newFront/myyoutubeapp/assets/uploads/" + video
@@ -132,7 +136,7 @@ def encoder():
 			set_resolution(video_path)
 			put_video_in_folder(video_path)
 
-			# send mail
+			mailer.send_mail(2, user_mail);
 
 if __name__ == '__main__':
 	encoder()

@@ -1,6 +1,7 @@
 import sys
 sys.path.insert(0, r'../../mailer')
 import mailer
+
 from flask_restful import Resource, reqparse
 from models import UserModel, TokenModel
 from resources import is_authentified, actual_user_id, is_user_connected, paging, number_page
