@@ -50,14 +50,7 @@ class GetAllComments(Resource):
 		result = CommentModel.get_all_comments_by_video_id(video_id)
 		page = json['page']
 		perPage = json['perPage']
-		datum = []
-
-		if page is None or perPage is None:
-			return {
-					'message': 'Bad Request',
-					'code': '3001 => One of your argument is "null"',
-					'data': json
-				}, 400		
+		datum = []	
 
 		for data in result:
 			datum.append({
@@ -66,6 +59,10 @@ class GetAllComments(Resource):
 				'user_id': data.user_id,
 			})
 
+		if page is None:
+			page = 1
+		if perPage is None:
+			perPage = 100
 		results = paging(datum, int(page), int(perPage))
 		total_page = number_page(datum, int(perPage))
 
