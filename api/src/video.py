@@ -43,11 +43,14 @@ class VideoCreate(Resource):
 
 			pid = os.fork()
 			if pid == 0:
-				encoder.encoder(data.mailer)
+				print('encoder')
+				encoder.encoder(data.email)
 			else :
+				print('pass')
 				pass
 
-			algolia.send_data_to_algolia()
+			# print('algolia')
+			# algolia.send_data_to_algolia()
 
 			return {
 				'message': 'OK',

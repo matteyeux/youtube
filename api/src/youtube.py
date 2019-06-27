@@ -15,7 +15,7 @@ api = Api(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://youtube:youtube@localhost/youtube'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.urandom(24)
-app.config['VIDEO_FOLDER'] = "../../newFront/myyoutubeapp/assets/uploads"
+app.config['VIDEO_FOLDER'] = "../../newFront/myyoutubeapp/assets/uploads/"
 app.config['VIDEO_URL'] = "http://127.0.0.1:5000/videos" # not used for the moment
 
 db = SQLAlchemy(app)
