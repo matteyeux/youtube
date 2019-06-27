@@ -137,13 +137,19 @@ def encoder():
 			set_resolution(video_path)
 			put_video_in_folder(video_path)
 
+			try:
+				with open("../../newFront/myyoutubeapp/assets/uploads/mail") as f:
+					target_mail = f.readline()
+			except: 
+				pass
+
+			if target_mail:
+				mailer.send_mail(2, target_mail)
+
 			os.remove(video_path)
 
 if __name__ == '__main__':
 	while True:
-		with open("../../newFront/myyoutubeapp/assets/uploads/mail") as f:
-			target_mail = f.readline()
 
-		mailer.send_mail(2, target_mail);
-		encoder()
+		encoder()	
 		time.sleep(30)

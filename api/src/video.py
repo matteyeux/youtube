@@ -41,13 +41,16 @@ class VideoCreate(Resource):
 			data = UserModel.get_user_by_id(user_id)
 			new_video.save_to_db()
 
+			with open('../../newFront/myyoutubeapp/assets/uploads/mail', 'w') as f:
+				f.write(data.email)
+
 			# print('algolia')
 			# algolia.send_data_to_algolia()
 
 			return {
 				'message': 'OK',
 				'data': {
-					'video': "video",
+					'video': "video"
 				}
 			}, 201
 		except:
