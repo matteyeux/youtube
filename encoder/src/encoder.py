@@ -139,4 +139,9 @@ def encoder(user_mail):
 			mailer.send_mail(2, user_mail);
 
 if __name__ == '__main__':
-	encoder()
+	if len(sys.argv) != 2:
+		print("error")
+		sys.exit(-1)
+
+	print(sys.argv[1])
+	encoder(sys.argv[1])
