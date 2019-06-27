@@ -117,7 +117,7 @@ def put_video_in_folder(video):
 
 def encoder():
 	for video in os.listdir("../../newFront/myyoutubeapp/assets/uploads/"):
-		if video != ".keep":
+		if video != ".keep" and video != "mail" :
 			video_path = "../../newFront/myyoutubeapp/assets/uploads/" + video
 			new_dir = "../../newFront/myyoutubeapp/assets/videos/" + video.split('.')[0]
 
@@ -137,10 +137,12 @@ def encoder():
 			set_resolution(video_path)
 			put_video_in_folder(video_path)
 
-			mailer.send_mail(2, user_mail);
 
 if __name__ == '__main__':
-	
 	while True:
+		with open("../../newFront/myyoutubeapp/assets/uploads/mail") as f:
+			target_mail = f.readline()
+
+		mailer.send_mail(2, target_mail);
 		encoder()
 		time.sleep(30)
