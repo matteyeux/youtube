@@ -11,6 +11,7 @@ import sys
 import subprocess
 import os
 import magic
+import time
 
 resolution_types = [
 	["4K", "3840", "2160"],
@@ -114,7 +115,7 @@ def put_video_in_folder(video):
 			# move video the right directory. eg: video/18/1080p/1080p.mp4
 			os.rename(video, folder + "/" + resolution_types[i][0] + ".mp4")
 
-def encoder(user_mail):
+def encoder():
 	for video in os.listdir("../../newFront/myyoutubeapp/assets/uploads/"):
 		if video != ".keep":
 			video_path = "../../newFront/myyoutubeapp/assets/uploads/" + video
@@ -139,9 +140,7 @@ def encoder(user_mail):
 			mailer.send_mail(2, user_mail);
 
 if __name__ == '__main__':
-	if len(sys.argv) != 2:
-		print("error")
-		sys.exit(-1)
-
-	print(sys.argv[1])
-	encoder(sys.argv[1])
+	
+	while True:
+		encoder()
+		time.sleep(30)
