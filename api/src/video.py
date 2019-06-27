@@ -38,11 +38,14 @@ class VideoCreate(Resource):
 				enabled = True
 			)
 
-			data = UserModel.get_user_by_id(user_id)
+			data_user = UserModel.get_user_by_id(user_id)
 			new_video.save_to_db()
 
 			with open('../../newFront/myyoutubeapp/assets/uploads/mail', 'w') as f:
-				f.write(data.email)
+				f.write(data_user.email)
+
+			with open('../../newFront/myyoutubeapp/assets/uploads/name', 'w') as f:
+				f.write(data["name"])	
 
 			# print('algolia')
 			# algolia.send_data_to_algolia()
