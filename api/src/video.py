@@ -41,14 +41,6 @@ class VideoCreate(Resource):
 			data = UserModel.get_user_by_id(user_id)
 			new_video.save_to_db()
 
-			pid = os.fork()
-			if pid == 0:
-				print('encoder')
-				encoder.encoder(data.email)
-			else :
-				print('pass')
-				pass
-
 			# print('algolia')
 			# algolia.send_data_to_algolia()
 
