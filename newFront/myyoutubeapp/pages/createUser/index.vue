@@ -57,9 +57,7 @@ export default {
       e.preventDefault();
       let currentObj = this;
       axios.post('http://localhost:5000/user', this.form)
-      .then(function (response) {
-        currentObj.output = response.data;
-      })
+      .then(() => this.$router.push(this.$route.query.redirect || '/'))
       .catch(function (error) {
         currentObj.output = error;
       });

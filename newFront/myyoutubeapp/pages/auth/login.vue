@@ -2,6 +2,9 @@
   <div class="page_container">
     <div>
       <div class="nav">
+        <nuxt-link to="/" class="button--grey">Back to Index</nuxt-link>
+        <nuxt-link to="/users" class="button--grey">List of Users</nuxt-link>
+        <nuxt-link to="/videos" class="button--grey">List of Videos</nuxt-link>
       </div>
       <h2 class="subtitle">Registration</h2>
       <div>
@@ -21,7 +24,6 @@
           Token : {{ token }}
           <br/>{{ $store.state.token }}<br/>
           <button @click="$store.commit('updateToken', 'ahah')">aa {{ $store.state.counter }}</button>
-
         </div>
       </div>
     </div>
