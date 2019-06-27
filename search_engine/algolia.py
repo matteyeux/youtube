@@ -22,6 +22,7 @@ def send_data_to_algolia():
 	index.save_objects(data['data'], {'autoGenerateObjectIDIfNotExist': True})
 
 if __name__ == '__main__':
-	print('send_data_to_algolia')
-	send_data_to_algolia()
-	time.sleep(30)
+	while True:
+		print('send_data_to_algolia')
+		send_data_to_algolia()
+		time.sleep(30)
