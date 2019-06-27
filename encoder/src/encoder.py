@@ -117,9 +117,16 @@ def put_video_in_folder(video):
 
 def encoder():
 	for video in os.listdir("../../newFront/myyoutubeapp/assets/uploads/"):
-		if video != ".keep" and video != "mail" :
+		if video != ".keep" and video != "mail" and video != "name" :
 			video_path = "../../newFront/myyoutubeapp/assets/uploads/" + video
-			new_dir = "../../newFront/myyoutubeapp/assets/videos/" + video.split('.')[0]
+			
+			try : 
+				with open("../../newFront/myyoutubeapp/assets/uploads/name") as f:
+					video_filename = f.readline()
+				new_dir = "../../newFront/myyoutubeapp/assets/videos/" + video_filename
+				#new_dir = "../../newFront/myyoutubeapp/assets/videos/" + video.split('.')[0]
+			except:
+				pass
 
 			try:
 				print("[i] creating dir %s" % new_dir)
