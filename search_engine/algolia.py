@@ -2,6 +2,7 @@ from algoliasearch.search_client import SearchClient
 import json
 import configparser
 import requests
+import time
 
 def send_data_to_algolia():
 	ini = configparser.ConfigParser()
@@ -23,3 +24,4 @@ def send_data_to_algolia():
 if __name__ == '__main__':
 	print('send_data_to_algolia')
 	send_data_to_algolia()
+	time.sleep(30)
