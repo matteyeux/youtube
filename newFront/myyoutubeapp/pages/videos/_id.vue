@@ -19,25 +19,25 @@
           <source :src="require('~/assets/videos/SampleVideo_1280x720_30mb.mp4')" type="video/mp4">
         </video>
 
-<!--         
+    
         ADD COMMENTS HERE
 
         <div class="md-6">
           <h2 class="subtitle">Commentaire vidéo</h2>
 
-          <ul>
-            <li v-for="video in videos.data" class="item">
-              <div class="card w-75">
-                <div class="card-body">
-                  <h5 class="card-title">Commentaire de {{ comments.user_id }}</h5>
-                  <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                </div>
-              </div>
-                <nuxt-link v-bind:to="'/videos/' + video.id" style="margin-top: 50px">{{ video.id }} - {{ video.name}}</nuxt-link>
 
+<form @submit.prevent="formSubmit">
+          <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+
+
+
+          <ul>
+            <li v-for="comment in comments" class="item">
+XX-
             </li>
           </ul>
-        </div> -->
+        </div> 
 
 
       </div>
@@ -50,17 +50,44 @@ import axios from 'axios';
 import { Route } from "vue-router"
 
 export default {
+/*
+  data() {
+    return {
+      username: '',
+      output: '',
+      token: 'vide'
+    };
+  },
+*/
   validate({ params }) {
     return !isNaN(+params.id)
   },
+
   async asyncData ({params, error}) {
     try {
-      const { data } = await axios.get(`http://localhost:5000/video/${+params.id}`)
-      return { video:data.data }
+      const { data } = await axios.get(`http://localhost:5000/video/${+params.id}`);
+      //const { datacomments } = await axios.get(`http://localhost:5000/video/${+params.id}`);
+      //const { all } = [data, 2]
+      return { 
+        video:data.data,
+        //comments:datacomments
+      }
     } catch (e) {
       error({ message: 'Video not found', statusCode: 404 })
     }
+  },
+
+
+  methods: {
+    formSubmit(params) {
+      const {datas} = axios.get(`http://localhost:5000/video/${+params.id}`)
+      .then((result) => {
+        console.log(result.datas.data.token);
+        this.token = result.datas.data.token; 
+      })  
+    }
   }
+
 };
 
 
