@@ -9,7 +9,7 @@ export default {
   data() {
     this.$store.commit('updateToken', this.$cookies.get('token'))
   }
-}
+};
 </script>
 
 <style>

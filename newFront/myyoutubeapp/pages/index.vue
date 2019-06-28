@@ -3,7 +3,7 @@
     <div>
       <div class="row">
         <nuxt-link to="/createUser" class="button--grey">Registration</nuxt-link>
-        <nuxt-link to="/auth/login" class="button--grey">Authentication</nuxt-link>
+        <nuxt-link to="/auth/login" class="button--grey">Login</nuxt-link>
       </div>
       <div class="row">
         <nuxt-link to="/users" class="button--grey">Liste des utilisateurs</nuxt-link>

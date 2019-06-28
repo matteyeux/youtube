@@ -6,7 +6,7 @@
         <nuxt-link to="/users" class="button--grey">List of Users</nuxt-link>
         <nuxt-link to="/videos" class="button--grey">List of Videos</nuxt-link>
       </div>
-      <h2 class="subtitle">Registration</h2>
+      <h2 class="subtitle">Login</h2>
       <div>
         <div class="col-md-4">
           <form @submit.prevent="formSubmit">
