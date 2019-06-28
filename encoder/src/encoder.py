@@ -53,20 +53,20 @@ def convert_to_mp4(vid_input):
 	return vid_output
 
 # encode video to a lower resolution
-def do_encode(vid_input, resolution_type):
+def do_encode(vid_input, video_output, resolution_type):
 	resolution = resolution_type[0]
 	encoding = resolution_type[1] + "x" + resolution_type[2]
 	video_name = vid_input.split('/')[-1].split('.')[0]
 
-	vid_output = "../../newFront/myyoutubeapp/assets/videos/" + video_name + "/" + resolution + ".mp4"
-
+	# vid_output = "../../newFront/myyoutubeapp/assets/videos/" + video_name + "/" + resolution + ".mp4"
+	new_video_output = video_output + "/" + resolution + ".mp4"
 	# don't print anything to stdout and sterr
 	FNULL = open(os.devnull, 'w')
 
 	# -n stands for : not overwrite output files in non-interactive mode
 	# put -y for overwriting
 	try :
-		p = subprocess.Popen(['ffmpeg', '-i', vid_input, '-s', encoding, vid_output, '-n'], stdout=FNULL, stderr=FNULL)
+		p = subprocess.Popen(['ffmpeg', '-i', vid_input, '-s', encoding, new_video_output, '-n'], stdout=FNULL, stderr=FNULL)
 		p.wait()
 	except:
 		print("[e] error")
@@ -88,7 +88,7 @@ def get_video_res(video):
 	height = int(video_stream['height'])
 	return width, height
 
-def set_resolution(video):
+def set_resolution(video, new_video):
 	width, height = get_video_res(video)
 	video_res = width * height
 
@@ -97,7 +97,7 @@ def set_resolution(video):
 		resolution = int(resolution_types[i][1]) * int(resolution_types[i][2])
 		if resolution < video_res:
 			print("[x] encoding in %s" % resolution_types[i][0])
-			do_encode(video, resolution_types[i])
+			do_encode(video, new_video, resolution_types[i])
 
 # aim of this function is to move default video
 # to it's new folder
@@ -119,15 +119,13 @@ def encoder():
 	for video in os.listdir("../../newFront/myyoutubeapp/assets/uploads/"):
 		if video != ".keep" and video != "mail" and video != "name" :
 			video_path = "../../newFront/myyoutubeapp/assets/uploads/" + video
-			
-			try : 
+
+			try:
 				with open("../../newFront/myyoutubeapp/assets/uploads/name") as f:
 					video_filename = f.readline()
 				new_dir = "../../newFront/myyoutubeapp/assets/videos/" + video_filename
-				#new_dir = "../../newFront/myyoutubeapp/assets/videos/" + video.split('.')[0]
 			except:
 				pass
-
 			try:
 				print("[i] creating dir %s" % new_dir)
 				os.mkdir(new_dir)
@@ -135,13 +133,12 @@ def encoder():
 				pass
 
 			if is_video(video_path) is False:
-				print("[e] file is not video")
 				sys.exit(1)
 
 			if is_mp4(video_path) is False:
 				video = convert_to_mp4(video_path)
 
-			set_resolution(video_path)
+			set_resolution(video_path, new_dir)
 			put_video_in_folder(video_path)
 
 			try:
@@ -158,5 +155,5 @@ def encoder():
 if __name__ == '__main__':
 	while True:
 
-		encoder()	
-		time.sleep(30)
+		encoder()
+		time.sleep(10)

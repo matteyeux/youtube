@@ -18,28 +18,19 @@
         <video width="50%" controls style="margin: 25px">
           <source :src="require('~/assets/videos/SampleVideo_1280x720_30mb.mp4')" type="video/mp4">
         </video>
-
-<!--         
-        ADD COMMENTS HERE
-
         <div class="md-6">
           <h2 class="subtitle">Commentaire vidéo</h2>
-
           <ul>
-            <li v-for="video in videos.data" class="item">
+            <li v-for="comment in comments" class="item">
               <div class="card w-75">
                 <div class="card-body">
                   <h5 class="card-title">Commentaire de {{ comments.user_id }}</h5>
                   <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
                 </div>
               </div>
-                <nuxt-link v-bind:to="'/videos/' + video.id" style="margin-top: 50px">{{ video.id }} - {{ video.name}}</nuxt-link>
-
             </li>
           </ul>
-        </div> -->
-
-
+        </div>
       </div>
     </div>
   </div>
@@ -55,10 +46,18 @@ export default {
   },
   async asyncData ({params, error}) {
     try {
-      const { data } = await axios.get(`http://localhost:5000/video/${+params.id}`)
+      const {data} = await axios.get(`http://localhost:5000/video/${+params.id}`)
       return { video:data.data }
     } catch (e) {
       error({ message: 'Video not found', statusCode: 404 })
+    }
+  },
+  async asyncData2 ({params, error}) {
+    try {
+      const {data} = await axios.get(`http://localhost:5000/video/${+params.id}/comments`)
+      return { comments:data.data }
+    } catch (e) {
+      error({ message: 'Comments not found', statusCode: 404 })
     }
   }
 };
