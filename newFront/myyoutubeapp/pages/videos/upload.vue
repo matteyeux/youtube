@@ -8,6 +8,8 @@
       <h2 class="subtitle">Uploader une video</h2>
       <div>
         <input type="file" @change="onFileSelected">
+        <label for="namevideo">Nome de la video</label>
+        <input v-model="namevideo" class="form-control" placeholder="Nom de la vidéo" required>
         <button @click="onUpload">Envoyer</button>
       </div>
     </div>
@@ -41,11 +43,9 @@ export default {
             const config = { headers: { 'content-type': 'multipart/form-data', 'Authorization': this.$store.state.token } }
             const fd = new FormData();
             fd.append('source', this.selectedFile);
-            fd.append('name', 'AlexProfond');
+            fd.append('name', this.namevideo);
             axios.post(`http://localhost:5000/video`, fd, config)
-            .then(res => {
-                console.log()
-            });
+            .then(() => this.$router.push(this.$route.query.redirect || '/videos'));
         }
     }
 };
