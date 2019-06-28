@@ -8,6 +8,7 @@
       <div class="row">
         <nuxt-link to="/users" class="button--grey">Liste des utilisateurs</nuxt-link>
         <nuxt-link to="/videos" class="button--grey">Liste des vidéos</nuxt-link>
+        <nuxt-link to="/videos/upload" class="button--grey">Upload Video</nuxt-link>
       </div>
       <logo />
       <h1 class="title">

@@ -18,19 +18,6 @@
         <video width="50%" controls style="margin: 25px">
           <source :src="require('~/assets/videos/SampleVideo_1280x720_30mb.mp4')" type="video/mp4">
         </video>
-<!--         <div class="md-6">
-          <h2 class="subtitle">Commentaire vidéo</h2>
-          <ul>
-            <li v-for="comment in comments" class="item">
-              <div class="card w-75">
-                <div class="card-body">
-                  <h5 class="card-title">Commentaire de {{ comment.user_id }}</h5>
-                  <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div> -->
       </div>
     </div>
   </div>
@@ -53,30 +40,6 @@ export default {
     }
   },
 };
-
-//   async asyncData2 ({params, error}) {
-//     try {
-//       const {data} = await axios.get(`http://localhost:5000/video/${+params.id}/comments`)
-//       return { comments:data.data }
-//     } catch (e) {
-//       error({ message: 'Comments not found', statusCode: 404 })
-//     }
-//   }
-
-// const { dataVideo } = await axios.get(`http://localhost:5000/video/${+params.id}`)
-// const { dataComment } = await axios.get(`http://localhost:5000/video/${+params.id}/comments`)
-// return { video:dataVideo.data,  comment:dataComment.data}
-
-// async componentDidMount() {
-//   const firstRequest = await axios.get(URL1);
-//   const secondRequest = await axios.get(URL2);
-//   const thirdRequest = await axios.get(URL3);
-
-//   this.setState({
-//     p1Location: firstRequest.data,
-//     p2Location: SecondRequest.data,
-//     p3Location: thirdRequest.data,
-//   });
 
 </script>
 
